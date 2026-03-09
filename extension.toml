@@ -8,4 +8,4 @@ repository = "https://github.com/felixtensor/zed-mlir"
 
 [grammars.mlir]
 repository = "https://github.com/artagnon/tree-sitter-mlir"
-rev = 1cff1bf79135f8effef87d7cee9d3b26d1970ee9
+rev = "1cff1bf79135f8effef87d7cee9d3b26d1970ee9"

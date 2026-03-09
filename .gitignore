@@ -1,2 +1,5 @@
+/grammars
 /target
 /tmp
+*.wasm
+.DS_Store
