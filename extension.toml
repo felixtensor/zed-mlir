@@ -1,0 +1,7 @@
+id = "mlir"
+name = "MLIR"
+version = "0.0.1"
+schema_version = 1
+authors = ["Your Name <your.email@example.com>"]
+description = "MLIR language support and LSP integration for Zed"
+repository = "https://github.com/your-username/zed-mlir"
