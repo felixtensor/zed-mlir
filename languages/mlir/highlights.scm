@@ -54,11 +54,6 @@
 (strided_layout "strided" @keyword)
 (strided_layout "offset" @keyword)
 
-;; Literal keywords
-(tensor_literal "dense" @keyword)
-(tensor_literal "sparse" @keyword)
-(array_literal "array" @keyword)
-
 ;; Trailing location
 (trailing_location "loc" @keyword)
 
