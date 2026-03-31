@@ -7,6 +7,8 @@
 
 ;; Keywords and Operation names
 (func_operation name: _ @keyword)
+(func_operation "private" @keyword)
+(func_operation "attributes" @keyword)
 (module_operation name: _ @keyword)
 
 (custom_op_name) @function.method
@@ -50,20 +52,29 @@
 (affine_map "affine_map" @keyword)
 (affine_set "affine_set" @keyword)
 (strided_layout "strided" @keyword)
+(strided_layout "offset" @keyword)
+
+;; Literal keywords
+(tensor_literal "dense" @keyword)
+(tensor_literal "sparse" @keyword)
+(array_literal "array" @keyword)
+
+;; Trailing location
+(trailing_location "loc" @keyword)
 
 ;; Strings
 (string_literal) @string
 
 ;; Functions and symbols
 (func_operation sym_name: (symbol_ref_id) @function)
-(module_operation sym_name: (symbol_ref_id) @module)
-(symbol_ref_id) @symbol
+(module_operation sym_name: (symbol_ref_id) @string.special.symbol)
+(symbol_ref_id) @string.special.symbol
 
 ;; Variables
-(value_use) @variable
+(value_use) @variable.special
 (func_arg_list (value_use) @variable.parameter)
 (block_arg_list (value_use) @variable.parameter)
-(op_result) @variable
+(op_result) @variable.special
 
 ;; Fallback keyword for ad-hoc tokens like `to`, `step`, `ins`, etc.
 (bare_id) @keyword
@@ -86,6 +97,9 @@
   ","
 ] @punctuation.delimiter
 
+;; Variadic
+(variadic) @punctuation.special
+
 ;; Operators
 [
   "="
@@ -94,4 +108,3 @@
 
 ;; Block labels
 (caret_id) @label
-
