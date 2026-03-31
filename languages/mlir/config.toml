@@ -5,11 +5,10 @@ line_comments = ["//"]
 word_characters = [".", "$", "@"]
 autoclose_before = " \n\r\t}:)>]"
 
-[brackets]
-paired = [
+brackets = [
   { start = "{", end = "}", close = true, newline = true },
   { start = "[", end = "]", close = true, newline = false },
   { start = "(", end = ")", close = true, newline = false },
   { start = "<", end = ">", close = true, newline = false },
-  { start = "\"", end = "\"", close = true, newline = false }
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["comment", "string"] },
 ]
