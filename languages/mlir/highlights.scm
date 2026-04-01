@@ -6,16 +6,29 @@
 (comment) @comment
 
 ;; Keywords and Operation names
-(func_operation name: _ @keyword)
-(func_operation "private" @keyword)
-(func_operation "attributes" @keyword)
+(func_operation name: _ @function.builtin)
+(func_operation "private" @attribute)
+(func_operation "attributes" @attribute)
 (module_operation name: _ @keyword)
 
-(custom_op_name) @function.method
-(generic_operation (string_literal) @function)
+(custom_op_name) @function.builtin
+(generic_operation (string_literal) @function.builtin)
 
 ;; Types
 (builtin_type) @type.builtin
+
+;; Two-tone highlighting inside composite types (tensor, memref, vector):
+(dim_list) @number
+(vector_dim_list) @number
+
+;; Element types inside dim_list / vector_dim_list are named nodes — their
+;; capture is deeper than (dim_list)/@number so they win for their own span.
+[
+  (float_type)
+  (integer_type)
+  (index_type)
+  (none_type)
+] @type.builtin
 
 [
   (type_alias)
@@ -61,14 +74,17 @@
 (string_literal) @string
 
 ;; Functions and symbols
-(func_operation sym_name: (symbol_ref_id) @function)
-(module_operation sym_name: (symbol_ref_id) @string.special.symbol)
+;; func.func @name  →  @string.special.symbol  (function definition name)
+;; module @name     →  @module                 (module definition name)
+;; @any_other_sym   →  @string.special.symbol  (symbol reference)
+(func_operation sym_name: (symbol_ref_id) @string.special.symbol)
+(module_operation sym_name: (symbol_ref_id) @module)
 (symbol_ref_id) @string.special.symbol
 
-;; Variables
+;; SSA values — @variable.special gives a distinct color
 (value_use) @variable.special
-(func_arg_list (value_use) @variable.parameter)
-(block_arg_list (value_use) @variable.parameter)
+(func_arg_list (value_use) @variable.special)
+(block_arg_list (value_use) @variable.special)
 (op_result) @variable.special
 
 ;; Fallback keyword for ad-hoc tokens like `to`, `step`, `ins`, etc.
