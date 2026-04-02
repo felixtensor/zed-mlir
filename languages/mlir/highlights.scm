@@ -48,10 +48,14 @@
 ;; Attributes and other constants
 [
   (tensor_literal)
+  (dense_resource_literal)
   (array_literal)
   (unit_literal)
   (uninitialized_literal)
 ] @constant.builtin
+
+;; Handle name inside dense_resource<...> overrides the bare_id @keyword catch-all
+(dense_resource_literal (bare_id) @constant.builtin)
 
 [
   (attribute_alias)
