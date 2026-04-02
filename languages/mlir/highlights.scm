@@ -18,8 +18,7 @@
 (builtin_type) @type.builtin
 
 ;; Two-tone highlighting inside composite types (tensor, memref, vector):
-(dim_list) @number
-(vector_dim_list) @number
+(dimension_size) @number
 
 ;; Element types inside dim_list / vector_dim_list are named nodes — their
 ;; capture is deeper than (dim_list)/@number so they win for their own span.

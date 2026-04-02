@@ -1,11 +1,11 @@
 id = "mlir"
 name = "MLIR"
 description = "MLIR support (third-party)"
-version = "0.2.0"
+version = "0.2.1"
 schema_version = 1
 authors = ["Buyun Xu <xubuyun@outlook.com>"]
 repository = "https://github.com/felixtensor/zed-mlir"
 
 [grammars.mlir]
 repository = "https://github.com/felixtensor/tree-sitter-mlir"
-rev = "f567b1c316c25cb11746b70a07cdb1ac9c578bc5"
+rev = "f7f4eed2df5b25e3243de4032ae1f2f1b3cbb113"
