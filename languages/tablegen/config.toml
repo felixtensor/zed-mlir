@@ -1,0 +1,17 @@
+name = "TableGen"
+grammar = "tablegen"
+path_suffixes = ["td"]
+line_comments = ["//"]
+block_comment = { start = "/*", end = "*/" }
+tab_size = 2
+hard_tabs = false
+word_characters = ["$", "!", "_"]
+autoclose_before = " \n\r\t}:)>]"
+
+brackets = [
+  { start = "{", end = "}", close = true, newline = true },
+  { start = "[", end = "]", close = true, newline = false },
+  { start = "(", end = ")", close = true, newline = false },
+  { start = "<", end = ">", close = true, newline = false },
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["comment", "string"] },
+]
