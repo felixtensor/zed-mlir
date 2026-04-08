@@ -2,7 +2,7 @@ name = "TableGen"
 grammar = "tablegen"
 path_suffixes = ["td"]
 line_comments = ["//"]
-block_comment = { start = "/*", end = "*/" }
+block_comment = ["/*", "*/"]
 tab_size = 2
 hard_tabs = false
 word_characters = ["$", "!", "_"]

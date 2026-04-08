@@ -95,7 +95,7 @@
 (string) @string
 (code) @string.special
 (integer) @number
-(boolean) @boolean
+["true" "false"] @boolean
 (uninitialized_value) @constant.builtin
 
 ;; Punctuation
