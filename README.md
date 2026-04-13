@@ -1,13 +1,14 @@
 # zed-mlir
 
-The MLIR extension for Zed editor. This extension provides support for MLIR (Multi-Level Intermediate Representation) files, including syntax highlighting and language server integration(WIP).
+MLIR and TableGen extension for the [Zed](https://zed.dev) editor.
 
 ## Features
 
-- **Syntax highlighting** for MLIR files (`.mlir`)
-- **Tree-sitter grammar** for accurate parsing
-- **Language server support** via mlir-lsp-server
-- **Basic code navigation** and diagnostics
+- **Syntax highlighting** for MLIR (`.mlir`) and TableGen (`.td`) files
+- **Tree-sitter grammar** — 100% pass rate on 403 official MLIR test files across 11 core dialects
+- **Symbol outline** — navigate functions (`func.func`), modules, and block labels
+- **Language server support** via `mlir-lsp-server` (must be in `$PATH`)
+- **Bracket matching, auto-close, and indentation**
 
 ## Installation
 
@@ -17,23 +18,12 @@ The MLIR extension for Zed editor. This extension provides support for MLIR (Mul
 3. Type "Install Extension" and select it
 4. Search for "mlir" and install the extension
 
-### Option 2: Build from source
+### Option 2: Install as dev extension
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/zed-mlir.git
-   cd zed-mlir
+   git clone https://github.com/felixtensor/zed-mlir.git
    ```
 
-2. Build the extension:
-   ```bash
-   cargo build --release
-   ```
+2. In Zed, open **Extensions** (`Cmd+Shift+X` on macOS), click **Install Dev Extension**, and select the cloned `zed-mlir` directory.
 
-3. The built extension will be at `target/release/libzed_mlir.so` (Linux), `target/release/libzed_mlir.dylib` (macOS), or `target/release/zed_mlir.dll` (Windows)
-
-4. Copy the built library to Zed's extensions directory:
-   - **macOS**: `~/Library/Application Support/Zed/extensions/`
-   - **Linux**: `~/.local/share/zed/extensions/`
-   - **Windows**: `%APPDATA%\Zed\extensions\`
-
-5. Restart Zed
+   Zed will build the extension automatically. Any local changes are picked up on rebuild.
