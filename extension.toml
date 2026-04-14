@@ -8,7 +8,7 @@ repository = "https://github.com/felixtensor/zed-mlir"
 
 [grammars.mlir]
 repository = "https://github.com/felixtensor/tree-sitter-mlir"
-rev = "75c6831e4511f9a01e02085fa8608f6662fb9604"
+rev = "4bcaa850739deb800dce44a8f759727decd254cc"
 
 [grammars.tablegen]
 repository = "https://github.com/tree-sitter-grammars/tree-sitter-tablegen"

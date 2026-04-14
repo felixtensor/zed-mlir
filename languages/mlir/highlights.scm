@@ -69,6 +69,7 @@
 (affine_set "affine_set" @keyword)
 (strided_layout "strided" @keyword)
 (strided_layout "offset" @keyword)
+["ceildiv" "floordiv" "mod"] @operator
 
 ;; Trailing location
 (trailing_location "loc" @keyword)
