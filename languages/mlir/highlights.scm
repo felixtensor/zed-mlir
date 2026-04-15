@@ -7,9 +7,10 @@
 
 ;; Keywords and Operation names
 (func_operation name: _ @function.builtin)
-(func_operation "private" @attribute)
+(func_operation ["private" "public"] @attribute)
 (func_operation "attributes" @attribute)
 (module_operation name: _ @keyword)
+(module_operation "attributes" @attribute)
 
 (custom_op_name) @function.builtin
 (generic_operation (string_literal) @function.builtin)
