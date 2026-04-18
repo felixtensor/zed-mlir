@@ -7,7 +7,7 @@ MLIR and TableGen extension for the [Zed](https://zed.dev) editor.
 - **Syntax highlighting** for MLIR (`.mlir`) and TableGen (`.td`) files
 - **Tree-sitter grammar** — 100% pass rate on 403 official MLIR test files across 11 core dialects
 - **Symbol outline** — navigate functions (`func.func`), modules, and block labels
-- **Language server support** via `mlir-lsp-server` (must be in `$PATH`)
+- **Language server support** via `mlir-lsp-server` (must be in `$PATH`) (WIP)
 - **Bracket matching, auto-close, and indentation**
 
 ## Installation
@@ -27,3 +27,12 @@ MLIR and TableGen extension for the [Zed](https://zed.dev) editor.
 2. In Zed, open **Extensions** (`Cmd+Shift+X` on macOS), click **Install Dev Extension**, and select the cloned `zed-mlir` directory.
 
    Zed will build the extension automatically. Any local changes are picked up on rebuild.
+
+## Feedback & Contributions
+
+This extension is still in its early stages and is actively being developed. If you encounter any bugs, have feature requests, or want to contribute, please feel free to:
+
+- [Open an issue](https://github.com/felixtensor/zed-mlir/issues) on GitHub.
+- Submit a pull request with your improvements.
+
+All feedback is welcome!
