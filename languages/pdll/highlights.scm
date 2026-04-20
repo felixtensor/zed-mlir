@@ -39,32 +39,38 @@
 (benefit_metadata "benefit" @variable)
 (recursion_metadata) @variable
 
-;; Built-in type constraints
-(type_constraint
-  ["Op" "Attr" "Type" "Value" "ValueRange" "TypeRange"] @type.builtin)
-
 ;; op<...> / attr<"..."> / type<"..."> expression keywords
 (op_expr "op" @keyword)
 (attr_expr "attr" @keyword)
 (type_expr "type" @keyword)
 
-;; Op name inside op<ns.name> and string forms
-(op_expr "<" (identifier) @constant ">")
-(op_expr "<" (string) @constant ">")
+;; Identifier defaults — keep this BEFORE the specific identifier rules below.
+;; Zed's tree-sitter highlighter uses last-match-wins: any later capture for
+;; the same identifier node overrides this fallback.
+(identifier) @variable
+(variable_def (identifier) @variable)
+(call_expr (identifier) @variable)
+
+;; Built-in type constraints
+(type_constraint
+  ["Op" "Attr" "Type" "Value" "ValueRange" "TypeRange"] @type.builtin)
 
 ;; Declaration names
 (pattern_decl . (identifier) @function)
 (rewrite_decl . (identifier) @function)
 (constraint_decl . (identifier) @type)
 
-;; Variable definition: name : Type
-(variable_def (identifier) @variable)
+;; Op name inside op<ns.name> and string forms
+(op_expr "<" (identifier) @constant ">")
+(op_expr "<" (string) @constant ">")
 
-;; Function-style invocation of user Constraint / Rewrite
-(call_expr (identifier) @variable)
-
-;; Fallback: bare identifier in expression position
-(identifier) @variable
+;; Inner name of built-in type constraints:
+;;   Op<my.dialect>, Op<"my.dialect">  — direct identifier/string child
+;;   Attr<x>, Type<x>, Value<x>, ValueRange<x>, TypeRange<x>
+;;     — wrapped in an inner type_constraint by the grammar
+(type_constraint "<" (identifier) @constant ">")
+(type_constraint "<" (string) @constant ">")
+(type_constraint "<" (type_constraint (identifier) @constant) ">")
 
 ;; Brackets
 [
