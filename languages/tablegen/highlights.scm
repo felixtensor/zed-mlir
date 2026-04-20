@@ -32,15 +32,18 @@
 
 "foreach" @keyword.control
 
-;; Variables
-
+;; Identifier fallback — keep BEFORE the specific identifier rules below.
+;; Zed's tree-sitter highlighter uses last-match-wins: later captures for the
+;; same identifier node override this fallback.
 (identifier) @variable
 
 (var) @variable.special
 
 ;; Template parameters
-
 (template_arg (identifier) @variable.parameter)
+
+;; Member access: `Foo.bar` — the `.bar` identifier in a value_suffix
+(value_suffix (identifier) @variable.member)
 
 ;; Types
 
@@ -72,6 +75,7 @@
 
 (instruction (identifier) @variable.member)
 (let_instruction (identifier) @variable.member)
+(let_item (identifier) @variable.member)
 
 ;; Bang operators / built-in functions
 
@@ -90,14 +94,6 @@
   "..."
 ] @operator
 
-;; Literals
-
-(string) @string
-(code) @string.special
-(integer) @number
-["true" "false"] @boolean
-(uninitialized_value) @constant.builtin
-
 ;; Punctuation
 
 [ "{" "}" ] @punctuation.bracket
@@ -112,6 +108,14 @@
 ] @punctuation.delimiter
 
 "!" @punctuation.special
+
+;; Literals
+
+(string) @string
+(code) @string.special
+(integer) @number
+["true" "false"] @boolean
+(uninitialized_value) @constant.builtin
 
 ;; Comments
 
