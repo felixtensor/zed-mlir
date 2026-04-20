@@ -4,9 +4,9 @@ MLIR and TableGen extension for the [Zed](https://zed.dev) editor.
 
 ## Features
 
-- **Syntax highlighting** for MLIR (`.mlir`) and TableGen (`.td`) files
+- **Syntax highlighting** for MLIR (`.mlir`), TableGen (`.td`), and PDLL (`.pdll`) files
 - **Tree-sitter grammar** — 100% pass rate on 403 official MLIR test files across 11 core dialects
-- **Symbol outline** — navigate functions (`func.func`), modules, and block labels
+- **Symbol outline** — navigate functions (`func.func`), modules, block labels, and PDLL `Pattern` / `Constraint` / `Rewrite` declarations
 - **Language server support** via `mlir-lsp-server` (must be in `$PATH`) (WIP)
 - **Bracket matching, auto-close, and indentation**
 
