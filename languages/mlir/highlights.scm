@@ -54,9 +54,6 @@
   (uninitialized_literal)
 ] @constant.builtin
 
-;; Handle name inside dense_resource<...> overrides the bare_id @keyword catch-all
-(dense_resource_literal (bare_id) @constant.builtin)
-
 [
   (attribute_alias)
   (attribute_alias_def)
@@ -93,7 +90,13 @@
 (op_result) @variable.special
 
 ;; Fallback keyword for ad-hoc tokens like `to`, `step`, `ins`, etc.
+;; Keep this BEFORE any specific bare_id captures — Zed's tree-sitter
+;; highlighter uses last-match-wins, so later rules override this fallback.
 (bare_id) @keyword
+
+;; Handle name inside dense_resource<...> — must come after the bare_id
+;; catch-all so it wins under last-match-wins.
+(dense_resource_literal (bare_id) @constant.builtin)
 
 ;; Brackets
 [
