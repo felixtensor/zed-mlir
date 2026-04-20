@@ -1,7 +1,5 @@
 ;; ---------------------------------------------------------------------------
 ;; PDLL syntax highlighting
-;; Scope choices follow the upstream TextMate grammar
-;; (tmp/pdll-grammar.json), mapped to Zed's documented highlight captures.
 ;; ---------------------------------------------------------------------------
 
 ;; Comments
