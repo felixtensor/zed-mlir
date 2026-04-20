@@ -1,0 +1,16 @@
+name = "PDLL"
+grammar = "pdll"
+path_suffixes = ["pdll"]
+line_comments = ["//"]
+tab_size = 2
+hard_tabs = false
+word_characters = [".", "$", "-"]
+autoclose_before = " \n\r\t}:)>]"
+
+brackets = [
+  { start = "{", end = "}", close = true, newline = true },
+  { start = "[", end = "]", close = true, newline = false },
+  { start = "(", end = ")", close = true, newline = false },
+  { start = "<", end = ">", close = true, newline = false },
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["comment", "string"] },
+]
