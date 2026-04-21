@@ -18,22 +18,28 @@ IDE support for [MLIR](https://mlir.llvm.org), TableGen, and PDLL in the [Zed](h
 A quick tour of the LSP features in action.
 
 ### Go to Definition
-![Go to Definition](docs/img/go-to-definition.gif)
+
+https://github.com/user-attachments/assets/97f13623-d392-4c7a-9c26-de4f7484af50
 
 ### Find References
-![Find References](docs/img/find-references.gif)
+
+https://github.com/user-attachments/assets/6dcd6cf9-8b9d-4d0c-8555-749d6da5ed56
 
 ### Hover / Signature
-![Hover](docs/img/hover.gif)
+
+https://github.com/user-attachments/assets/96413a29-765b-4790-8f6d-8ffabd862f05
 
 ### Completion
-![Completion](docs/img/completion.gif)
+
+https://github.com/user-attachments/assets/e3c57915-7c78-4105-8b0f-1a0e81fb802f
 
 ### Diagnostics
-![Diagnostics](docs/img/diagnostics.gif)
+
+https://github.com/user-attachments/assets/da49abbb-9c66-422c-9b1d-dc6b6e66fc62
 
 ### Symbol Outline
-![Symbol Outline](docs/img/outline.gif)
+
+https://github.com/user-attachments/assets/84bedf58-82f9-466c-a163-dba9d0fb8412
 
 ## Installation
 
