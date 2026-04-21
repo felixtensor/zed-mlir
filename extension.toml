@@ -1,6 +1,6 @@
 id = "mlir-suite"
 name = "MLIR Suite"
-description = "IDE support for MLIR, TableGen, and PDLL — integrated LSP servers, custom dialect support, and symbol outline."
+description = "MLIR, TableGen, and PDLL with integrated LSP servers and custom dialect support."
 version = "0.5.0"
 schema_version = 1
 authors = ["Buyun Xu <xubuyun@outlook.com>"]

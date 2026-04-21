@@ -1,6 +1,6 @@
-# MLIR Suite
+# zed-mlir
 
-IDE support for [MLIR](https://mlir.llvm.org), TableGen, and PDLL in the [Zed](https://zed.dev) editor.
+The extension provided IDE support for [MLIR](https://mlir.llvm.org), TableGen, and PDLL in the [Zed](https://zed.dev) editor.
 
 ## Features
 
@@ -19,25 +19,37 @@ A quick tour of the LSP features in action.
 
 ### Go to Definition
 
+Jumping from an `affine_Op` usage to its class definition in the affine dialect's TableGen sources — cross-file resolution via the compilation database.
+
 https://github.com/user-attachments/assets/97f13623-d392-4c7a-9c26-de4f7484af50
 
 ### Find References
+
+Selecting a `func.func` in a module with multiple callers and listing every call site across the call graph.
 
 https://github.com/user-attachments/assets/6dcd6cf9-8b9d-4d0c-8555-749d6da5ed56
 
 ### Hover / Signature
 
+Hovering `memref.alloc` surfaces its full op definition inline — operands, results, attributes, and assembly format — without leaving the buffer.
+
 https://github.com/user-attachments/assets/96413a29-765b-4790-8f6d-8ffabd862f05
 
 ### Completion
+
+Writing a PDLL pattern: context-aware completion offers the `Op` / `Value` constraints that are valid at the cursor.
 
 https://github.com/user-attachments/assets/e3c57915-7c78-4105-8b0f-1a0e81fb802f
 
 ### Diagnostics
 
+An out-of-bounds offset on `tensor.extract_slice` triggers inline red squiggles; the diagnostics panel aggregates every verifier error reported for `invalid.mlir`.
+
 https://github.com/user-attachments/assets/da49abbb-9c66-422c-9b1d-dc6b6e66fc62
 
 ### Symbol Outline
+
+The outline panel mirrors MLIR's regional structure, nesting `func.func` under its enclosing `module` so you can scan hierarchy at a glance.
 
 https://github.com/user-attachments/assets/84bedf58-82f9-466c-a163-dba9d0fb8412
 
