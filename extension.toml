@@ -8,12 +8,24 @@ repository = "https://github.com/felixtensor/zed-mlir"
 
 [grammars.mlir]
 repository = "https://github.com/felixtensor/tree-sitter-mlir"
-rev = "79b1576d428873eb2bb8c90079677210843952c7"
+commit = "79b1576d428873eb2bb8c90079677210843952c7"
 
 [grammars.tablegen]
 repository = "https://github.com/tree-sitter-grammars/tree-sitter-tablegen"
-rev = "b1170880c61355aaf38fc06f4af7d3c55abdabc4"
+commit = "b1170880c61355aaf38fc06f4af7d3c55abdabc4"
 
 [grammars.pdll]
 repository = "https://github.com/felixtensor/tree-sitter-pdll"
-rev = "05c9e11c92ff215c12037da897de1c02cbc3875e"
+commit = "05c9e11c92ff215c12037da897de1c02cbc3875e"
+
+[language_servers.mlir-lsp-server]
+name = "mlir-lsp-server"
+language = "MLIR"
+
+[language_servers.mlir-pdll-lsp-server]
+name = "mlir-pdll-lsp-server"
+language = "PDLL"
+
+[language_servers.tblgen-lsp-server]
+name = "tblgen-lsp-server"
+language = "TableGen"
