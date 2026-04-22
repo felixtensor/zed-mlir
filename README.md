@@ -1,11 +1,11 @@
 # zed-mlir
 
-The extension provided IDE support for [MLIR](https://mlir.llvm.org), TableGen, and PDLL in the [Zed](https://zed.dev) editor.
+[MLIR](https://mlir.llvm.org), TableGen, and PDLL support for the [Zed](https://zed.dev) editor.
 
 ## Features
 
-- **Tree-sitter grammars** for MLIR (`.mlir`), TableGen (`.td`), and PDLL (`.pdll`) — 100% pass rate on 403 official MLIR test files across 11 core dialects.
-- **First-class custom dialect support** — unknown `dialect.op` forms are recognized and highlighted correctly, so your project's own dialects just work.
+- **Tree-sitter grammars** for MLIR (`.mlir`), TableGen (`.td`), and PDLL (`.pdll`) — 100% pass rate on 403 official MLIR test files across 11 core dialects, meaning virtually all valid MLIR syntax is highlighted correctly out of the box.
+- **First-class custom dialect support** — user-defined or out-of-tree `dialect.op` forms are recognized and highlighted correctly, so your project's own dialects just work.
 - **Symbol outline** — navigate `func.func`, modules, block labels, and PDLL `Pattern` / `Constraint` / `Rewrite` declarations from the outline panel.
 - **Language Server integration** for all three upstream LLVM servers:
   - `mlir-lsp-server` for `.mlir`
@@ -13,49 +13,16 @@ The extension provided IDE support for [MLIR](https://mlir.llvm.org), TableGen, 
   - `tblgen-lsp-server` for `.td`
 - **Editing ergonomics** — bracket matching, auto-close pairs, and indentation tuned for each language.
 
-## Screenshots
+## Prerequisites
 
-A quick tour of the LSP features in action.
-
-### Go to Definition
-
-Jumping from an `affine_Op` usage to its class definition in the affine dialect's TableGen sources — cross-file resolution via the compilation database.
-
-https://github.com/user-attachments/assets/97f13623-d392-4c7a-9c26-de4f7484af50
-
-### Find References
-
-Selecting a `func.func` in a module with multiple callers and listing every call site across the call graph.
-
-https://github.com/user-attachments/assets/6dcd6cf9-8b9d-4d0c-8555-749d6da5ed56
-
-### Hover / Signature
-
-Hovering `memref.alloc` surfaces its full op definition inline — operands, results, attributes, and assembly format — without leaving the buffer.
-
-https://github.com/user-attachments/assets/96413a29-765b-4790-8f6d-8ffabd862f05
-
-### Completion
-
-Writing a PDLL pattern: context-aware completion offers the `Op` / `Value` constraints that are valid at the cursor.
-
-https://github.com/user-attachments/assets/e3c57915-7c78-4105-8b0f-1a0e81fb802f
-
-### Diagnostics
-
-An out-of-bounds offset on `tensor.extract_slice` triggers inline red squiggles; the diagnostics panel aggregates every verifier error reported for `invalid.mlir`.
-
-https://github.com/user-attachments/assets/da49abbb-9c66-422c-9b1d-dc6b6e66fc62
-
-### Symbol Outline
-
-The outline panel mirrors MLIR's regional structure, nesting `func.func` under its enclosing `module` so you can scan hierarchy at a glance.
-
-https://github.com/user-attachments/assets/84bedf58-82f9-466c-a163-dba9d0fb8412
+- [Zed](https://zed.dev) editor
+- (Optional) LLVM language servers for LSP features — see [Language Server Setup](#language-server-setup).
 
 ## Installation
 
-Install from Zed's Extensions panel (`Cmd+Shift+X` on macOS, `Ctrl+Shift+X` on Linux/Windows), or install as a dev extension:
+Install from Zed's Extensions panel (`Cmd+Shift+X` on macOS, `Ctrl+Shift+X` on Linux/Windows) and search for "MLIR Suite".
+
+To install locally as a dev extension (for development or testing):
 
 ```bash
 git clone https://github.com/felixtensor/zed-mlir.git
@@ -64,8 +31,6 @@ git clone https://github.com/felixtensor/zed-mlir.git
 In Zed, open **Extensions** → **Install Dev Extension** → select the cloned directory.
 
 ## Language Server Setup
-
-This extension **does not ship any language server binary**. You bring your own — built from the LLVM project — and the extension locates it for you.
 
 ### Building the servers
 
@@ -88,24 +53,15 @@ After a successful build, the binaries land in `llvm-project/build/bin/`. Either
 
 > Tip: if `mlir` is listed in `LLVM_ENABLE_PROJECTS` and you build the default `all` target, the three LSP servers are produced along with the rest of MLIR — no separate invocation needed.
 
-### How the extension finds them
+### Configuration
 
-For each language, the extension resolves the server binary in this order:
-
-1. **User setting** — `lsp.<server-id>.binary.path` in your Zed `settings.json`.
-2. **PATH lookup** — falls back to searching `$PATH` for the default binary name.
-
-If neither succeeds, you'll see an error that tells you exactly where to set the path or how to install. Syntax highlighting, outline, and other non-LSP features continue to work even when no server is configured.
-
-The three server ids are:
+The extension looks for each server binary first in `lsp.<server-id>.binary.path` (Zed `settings.json`), then on `$PATH`.
 
 | Language | Server id |
 |---|---|
 | MLIR | `mlir-lsp-server` |
 | PDLL | `mlir-pdll-lsp-server` |
 | TableGen | `tblgen-lsp-server` |
-
-### Configuration examples
 
 **Override a binary path** (server installed outside `$PATH`):
 
@@ -120,6 +76,9 @@ The three server ids are:
   }
 }
 ```
+
+<details>
+<summary><strong>Advanced: PDLL / TableGen include paths and logging</strong></summary>
 
 **Point PDLL at a compilation database** (enables cross-file navigation for included `.td` / `.pdll` files):
 
@@ -158,9 +117,9 @@ The three server ids are:
 }
 ```
 
-> **Important — include paths are required for a usable TableGen LSP.** Without `--tablegen-extra-dir` (or a `--tablegen-compilation-database`), `tblgen-lsp-server` can't resolve `include "mlir/..."` / `include "llvm/..."` directives, which means go-to-definition and completion will silently fail on most symbols. This is a requirement of the server, not a limitation of this extension. PDLL has an equivalent requirement: pass `--pdll-compilation-database` or `--pdll-extra-dir` for cross-file navigation.
+> **Note:** Both `tblgen-lsp-server` and `mlir-pdll-lsp-server` require include paths or a compilation database to resolve cross-file references. Without them, go-to-definition and completion will silently fail on most symbols.
 
-**Enable verbose LSP logging** (for debugging — all three servers accept `--log={error|info|verbose}`):
+**Enable verbose LSP logging** (all three servers accept `--log={error|info|verbose}`):
 
 ```json
 {
@@ -174,11 +133,54 @@ The three server ids are:
 }
 ```
 
-After changing settings, open the command palette and run `zed: restart language server` to apply them.
+</details>
+
+After changing settings, open the command palette (`Cmd+Shift+P` on macOS, `Ctrl+Shift+P` on Linux/Windows) and run `zed: restart language server` to apply them.
+
+## Screenshots
+
+### Go to Definition
+
+https://github.com/user-attachments/assets/97f13623-d392-4c7a-9c26-de4f7484af50
+
+### Find References
+
+https://github.com/user-attachments/assets/6dcd6cf9-8b9d-4d0c-8555-749d6da5ed56
+
+### Hover / Signature
+
+https://github.com/user-attachments/assets/96413a29-765b-4790-8f6d-8ffabd862f05
+
+### Completion
+
+https://github.com/user-attachments/assets/e3c57915-7c78-4105-8b0f-1a0e81fb802f
+
+### Diagnostics
+
+https://github.com/user-attachments/assets/da49abbb-9c66-422c-9b1d-dc6b6e66fc62
+
+### Symbol Outline
+
+https://github.com/user-attachments/assets/84bedf58-82f9-466c-a163-dba9d0fb8412
+
+## Acknowledgements
+
+This extension builds on:
+
+- [MLIR](https://mlir.llvm.org) — the multi-level intermediate representation framework from the LLVM project.
+- [tree-sitter-mlir](https://github.com/felixtensor/tree-sitter-mlir) — Tree-sitter grammar for MLIR.
+- [tree-sitter-tablegen](https://github.com/tree-sitter-grammars/tree-sitter-tablegen) — Tree-sitter grammar for TableGen.
+- [tree-sitter-pdll](https://github.com/felixtensor/tree-sitter-pdll) — Tree-sitter grammar for PDLL.
+- The three LSP servers (`mlir-lsp-server`, `mlir-pdll-lsp-server`, `tblgen-lsp-server`) are part of the [LLVM project](https://github.com/llvm/llvm-project).
+
+For MLIR tooling in other editors, see:
+
+- [vscode-mlir](https://github.com/llvm/vscode-mlir) — official VS Code extension for MLIR, PDLL, and TableGen.
+- [mlir-mode](https://github.com/llvm/llvm-project/tree/main/mlir/utils/emacs) — Emacs major mode and LSP client, shipped in the LLVM monorepo.
 
 ## Feedback & Contributions
 
-This extension is actively developed. See the [roadmap](docs/ROADMAP.md) for what's planned next. Bug reports, feature requests, and pull requests are welcome:
+This extension is actively developed. See the [roadmap](docs/ROADMAP.md) for what's planned next. Contributions of all sizes are welcome — bug reports, feature requests, and pull requests:
 
 - [Open an issue](https://github.com/felixtensor/zed-mlir/issues)
 - Submit a pull request with your improvements
