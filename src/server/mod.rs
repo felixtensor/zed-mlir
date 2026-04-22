@@ -1,6 +1,29 @@
 use std::collections::HashMap;
 
-use zed_extension_api::{self as zed, settings::LspSettings, Result, Worktree};
+use serde::Deserialize;
+use zed_extension_api::{self as zed, serde_json, settings::LspSettings, Result, Worktree};
+
+/// Structured settings that can be provided via the `"settings"` field of
+/// `lsp.<server-id>` in Zed's `settings.json`.
+///
+/// ```jsonc
+/// "lsp": {
+///   "tblgen-lsp-server": {
+///     "settings": {
+///       "compilation_database": "build/tablegen_compile_commands.yml",
+///       "extra_dirs": ["include/"]
+///     }
+///   }
+/// }
+/// ```
+#[derive(Debug, Default, Deserialize)]
+pub struct ServerSettings {
+    /// Path to the compilation-database YAML file.
+    pub compilation_database: Option<String>,
+    /// Extra include directories passed via `--*-extra-dir`.
+    #[serde(default)]
+    pub extra_dirs: Vec<String>,
+}
 
 mod mlir;
 mod pdll;
@@ -47,41 +70,72 @@ pub trait LanguageServer {
         None
     }
 
+    /// The CLI flag prefix for extra include directories, *without* the `=`.
+    ///
+    /// Return `None` (the default) if this server does not support extra dirs.
+    fn extra_dir_flag(&self) -> Option<&'static str> {
+        None
+    }
+
     /// Resolve the full command used to start this language server.
+    ///
+    /// Flag resolution priority (highest → lowest):
+    /// 1. Raw flags in `binary.arguments`
+    /// 2. Structured fields in `settings`
+    /// 3. Auto-detection from the worktree
     fn resolve_command(
         &self,
         worktree: &Worktree,
         path_cache: &mut HashMap<&'static str, String>,
     ) -> Result<zed::Command> {
-        let user_binary = LspSettings::for_worktree(self.id(), worktree)
-            .ok()
-            .and_then(|s| s.binary);
+        let lsp_settings = LspSettings::for_worktree(self.id(), worktree).ok();
 
-        let command = match user_binary.as_ref().and_then(|b| b.path.clone()) {
+        let user_binary = lsp_settings.as_ref().and_then(|s| s.binary.as_ref());
+
+        let command = match user_binary.and_then(|b| b.path.clone()) {
             Some(path) => path,
             None => self.resolve_from_path(worktree, path_cache)?,
         };
 
         let mut args = user_binary
-            .as_ref()
             .and_then(|b| b.arguments.clone())
             .unwrap_or_default();
 
-        // Auto-detect compilation database if the server supports it and the
-        // user hasn't already supplied the flag.
-        if let (Some(flag), Some(filename)) =
-            (self.compilation_db_flag(), self.compilation_db_filename())
-        {
+        // Parse structured settings from `lsp.<id>.settings`.
+        let settings: ServerSettings = lsp_settings
+            .as_ref()
+            .and_then(|s| s.settings.clone())
+            .map(serde_json::from_value)
+            .transpose()
+            .unwrap_or_default()
+            .unwrap_or_default();
+
+        // --- compilation database ---
+        if let Some(flag) = self.compilation_db_flag() {
             let already_set = args.iter().any(|a| a.starts_with(flag));
             if !already_set {
-                if let Some(db_path) = detect_compilation_db(worktree, filename) {
-                    args.push(format!("{flag}={db_path}"));
+                // Try structured setting first, then auto-detect.
+                let db_path = settings
+                    .compilation_database
+                    .or_else(|| {
+                        self.compilation_db_filename()
+                            .and_then(|f| detect_compilation_db(worktree, f))
+                    });
+                if let Some(path) = db_path {
+                    args.push(format!("{flag}={path}"));
                 }
             }
         }
 
+        // --- extra include directories ---
+        if let Some(flag) = self.extra_dir_flag() {
+            for dir in &settings.extra_dirs {
+                args.push(format!("{flag}={dir}"));
+            }
+        }
+
         let env = user_binary
-            .and_then(|b| b.env)
+            .and_then(|b| b.env.clone())
             .map(|m| m.into_iter().collect::<Vec<(String, String)>>())
             .unwrap_or_default();
 

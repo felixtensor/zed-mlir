@@ -7,4 +7,5 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
+serde = { version = "1.0.228", features = ["derive"] }
 zed_extension_api = "0.7.0"
