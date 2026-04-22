@@ -16,7 +16,7 @@ commit = "b1170880c61355aaf38fc06f4af7d3c55abdabc4"
 
 [grammars.pdll]
 repository = "https://github.com/felixtensor/tree-sitter-pdll"
-commit = "05c9e11c92ff215c12037da897de1c02cbc3875e"
+commit = "8c7e8643acc5534b4e5316e2c97aa52a54d74faa"
 
 [language_servers.mlir-lsp-server]
 name = "mlir-lsp-server"

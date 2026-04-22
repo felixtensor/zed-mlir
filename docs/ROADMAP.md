@@ -19,7 +19,8 @@ This document tracks the planned direction of **MLIR Suite**. Items are grouped 
 - **Structured compilation-database settings.** Today users pass `--pdll-compilation-database=…` / `--tablegen-compilation-database=…` / `--*-extra-dir=…` as raw CLI arguments. Add a structured schema in `settings.json` and translate it into CLI flags automatically.
 - **Auto-detect `build/*_compile_commands.yml`** in the workspace when no explicit database is configured.
 - **Settings-change restart prompt.** Detect changes to LSP-related settings and offer to restart the affected server (prompt | auto-restart | ignore).
-- **Continued language highlight & editor-capability work.** A steady stream of small, focused improvements: query-level highlight refinements for PDLL and TableGen, new capability files (`injections.scm` for C++ inside `[{ … }]` and shell on `// RUN:` comments, `folds.scm` for block folding, `outline.scm` for TableGen), and incremental grammar fixes.
+- **Continued language highlight & editor-capability work.** A steady stream of small, focused improvements: query-level highlight refinements for PDLL and TableGen, new capability files (shell injection on `// RUN:` comments, `folds.scm` for block folding, `outline.scm` for TableGen), and incremental grammar fixes.
+- **MLIR inside C++ raw strings (`R"mlir(…)mlir"`).** Zed's bundled C++ grammar already injects `raw_string_content` using the delimiter as `@injection.language`. Since this extension registers the `mlir` grammar, the injection may already work out of the box. Needs verification with a real `.cpp` file containing `R"mlir(...)mlir"`.
 
 ## Mid-term
 
