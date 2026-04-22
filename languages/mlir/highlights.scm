@@ -1,5 +1,11 @@
 ;; ---------------------------------------------------------------------------
 ;; Dialect-agnostic MLIR syntax highlighting
+;;
+;; Zed's tree-sitter highlighter uses last-match-wins: when multiple rules
+;; overlap, the one that appears *later* in the file wins. The `(bare_id)
+;; @keyword` fallback near the end must therefore come *before* any more
+;; specific `bare_id` captures (e.g. inside `attribute_entry` or
+;; `dense_resource_literal`) so those later rules override it.
 ;; ---------------------------------------------------------------------------
 
 ;; Comments
@@ -90,8 +96,9 @@
 (op_result) @variable.special
 
 ;; Fallback keyword for ad-hoc tokens like `to`, `step`, `ins`, etc.
-;; Keep this BEFORE any specific bare_id captures — Zed's tree-sitter
-;; highlighter uses last-match-wins, so later rules override this fallback.
+;; This rule must appear *before* any more specific `(bare_id)` capture
+;; (e.g. `attribute_entry`, `dense_resource_literal`) so the later rule
+;; wins under Zed's last-match-wins semantics.
 (bare_id) @keyword
 
 ;; Handle name inside dense_resource<...> — must come after the bare_id
