@@ -11,4 +11,13 @@ impl LanguageServer for TablegenServer {
     fn default_binary(&self) -> &'static str {
         "tblgen-lsp-server"
     }
+
+    fn compilation_db_flag(&self) -> Option<&'static str> {
+        Some("--tablegen-compilation-database")
+    }
+
+    fn compilation_db_filename(&self) -> Option<&'static str> {
+        Some("tablegen_compile_commands.yml")
+    }
 }
+

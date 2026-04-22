@@ -11,4 +11,13 @@ impl LanguageServer for PdllServer {
     fn default_binary(&self) -> &'static str {
         "mlir-pdll-lsp-server"
     }
+
+    fn compilation_db_flag(&self) -> Option<&'static str> {
+        Some("--pdll-compilation-database")
+    }
+
+    fn compilation_db_filename(&self) -> Option<&'static str> {
+        Some("pdll_compile_commands.yml")
+    }
 }
+
