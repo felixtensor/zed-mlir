@@ -24,4 +24,3 @@ impl LanguageServer for PdllServer {
         Some("--pdll-extra-dir")
     }
 }
-

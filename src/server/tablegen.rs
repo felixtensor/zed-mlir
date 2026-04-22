@@ -24,4 +24,3 @@ impl LanguageServer for TablegenServer {
         Some("--tablegen-extra-dir")
     }
 }
-
