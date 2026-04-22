@@ -47,12 +47,7 @@ pub use tablegen::TablegenServer;
 
 /// Candidate paths to probe for compilation-database files, relative to the
 /// worktree root. Listed from most-specific to least-specific.
-const BUILD_DIR_CANDIDATES: &[&str] = &[
-    "build",
-    "out",
-    "cmake-build-debug",
-    "cmake-build-release",
-];
+const BUILD_DIR_CANDIDATES: &[&str] = &["build", "out"];
 
 /// Trait defining the interface for a language server integration.
 ///
