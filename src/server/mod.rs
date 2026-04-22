@@ -153,10 +153,8 @@ pub trait LanguageServer {
                 args.push(format!("--log={level}"));
             }
         }
-        if settings.pretty == Some(true) {
-            if !args.iter().any(|a| a == "--pretty") {
-                args.push("--pretty".to_string());
-            }
+        if settings.pretty == Some(true) && !args.iter().any(|a| a == "--pretty") {
+            args.push("--pretty".to_string());
         }
 
         let env = user_binary
