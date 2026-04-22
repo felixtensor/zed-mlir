@@ -77,39 +77,31 @@ The extension looks for each server binary first in `lsp.<server-id>.binary.path
 }
 ```
 
-<details>
-<summary><strong>Advanced: PDLL / TableGen include paths and logging</strong></summary>
+#### Compilation database & include paths
 
-**Point PDLL at a compilation database** (enables cross-file navigation for included `.td` / `.pdll` files):
+Both `tblgen-lsp-server` and `mlir-pdll-lsp-server` need a compilation database or include paths to resolve cross-file references. Without them, go-to-definition and completion will silently fail on most symbols.
 
-```json
-{
-  "lsp": {
-    "mlir-pdll-lsp-server": {
-      "binary": {
-        "path": "/path/to/llvm-project/build/bin/mlir-pdll-lsp-server",
-        "arguments": [
-          "--pdll-compilation-database=/path/to/build/pdll_compile_commands.yml",
-          "--pdll-extra-dir=/path/to/llvm-project/mlir/include"
-        ]
-      }
-    }
-  }
-}
-```
+**Auto-detection:** The extension attempts to locate compilation-database files in your workspace automatically. If detection succeeds, no manual configuration is needed.
 
-**Point TableGen at include directories** (needed for `include "mlir/..."` resolution, go-to-definition, completion):
+**Structured settings** (when the database or includes live elsewhere):
 
 ```json
 {
   "lsp": {
     "tblgen-lsp-server": {
-      "binary": {
-        "path": "/path/to/llvm-project/build/bin/tblgen-lsp-server",
-        "arguments": [
-          "--tablegen-compilation-database=/path/to/build/tablegen_compile_commands.yml",
-          "--tablegen-extra-dir=/path/to/llvm-project/llvm/include",
-          "--tablegen-extra-dir=/path/to/llvm-project/mlir/include"
+      "settings": {
+        "compilation_database": "/path/to/build/tablegen_compile_commands.yml",
+        "extra_dirs": [
+          "/path/to/llvm-project/llvm/include",
+          "/path/to/llvm-project/mlir/include"
+        ]
+      }
+    },
+    "mlir-pdll-lsp-server": {
+      "settings": {
+        "compilation_database": "/path/to/build/pdll_compile_commands.yml",
+        "extra_dirs": [
+          "/path/to/llvm-project/mlir/include"
         ]
       }
     }
@@ -117,9 +109,12 @@ The extension looks for each server binary first in `lsp.<server-id>.binary.path
 }
 ```
 
-> **Note:** Both `tblgen-lsp-server` and `mlir-pdll-lsp-server` require include paths or a compilation database to resolve cross-file references. Without them, go-to-definition and completion will silently fail on most symbols.
+> If `binary.arguments` contains the same flag, it takes precedence over `settings` and auto-detection.
 
-**Enable verbose LSP logging** (all three servers accept `--log={error|info|verbose}`):
+<details>
+<summary><strong>Advanced: verbose logging</strong></summary>
+
+All three servers accept `--log={error|info|verbose}`:
 
 ```json
 {
