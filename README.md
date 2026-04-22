@@ -55,7 +55,7 @@ After a successful build, the binaries land in `llvm-project/build/bin/`. Either
 
 ### Configuration
 
-The extension looks for each server binary first in `lsp.<server-id>.binary.path` (Zed `settings.json`), then on `$PATH`.
+Each server is configured under `lsp.<server-id>.settings` in Zed's `settings.json`. The extension looks for the server binary via `settings.path`, then falls back to `$PATH`.
 
 | Language | Server id |
 |---|---|
@@ -63,33 +63,32 @@ The extension looks for each server binary first in `lsp.<server-id>.binary.path
 | PDLL | `mlir-pdll-lsp-server` |
 | TableGen | `tblgen-lsp-server` |
 
-**Override a binary path** (server installed outside `$PATH`):
+#### Available settings
 
-```json
+| Field | Type | Applies to | Description |
+|---|---|---|---|
+| `path` | `string` | all | Path to the server binary |
+| `compilation_database` | `string` | tblgen, pdll | Path to the compilation-database YAML |
+| `extra_dirs` | `string[]` | tblgen, pdll | Extra include directories |
+| `log` | `string` | all | Log verbosity: `"error"`, `"info"`, or `"verbose"` |
+| `pretty` | `bool` | all | Pretty-print JSON output |
+
+All fields are optional. The extension auto-detects compilation-database files in your workspace; if detection succeeds, no manual configuration is needed.
+
+#### Example
+
+```jsonc
 {
   "lsp": {
     "mlir-lsp-server": {
-      "binary": {
-        "path": "/path/to/llvm-project/build/bin/mlir-lsp-server"
+      "settings": {
+        "path": "/path/to/mlir-lsp-server",
+        "log": "verbose"
       }
-    }
-  }
-}
-```
-
-#### Compilation database & include paths
-
-Both `tblgen-lsp-server` and `mlir-pdll-lsp-server` need a compilation database or include paths to resolve cross-file references. Without them, go-to-definition and completion will silently fail on most symbols.
-
-**Auto-detection:** The extension attempts to locate compilation-database files in your workspace automatically. If detection succeeds, no manual configuration is needed.
-
-**Structured settings** (when the database or includes live elsewhere):
-
-```json
-{
-  "lsp": {
+    },
     "tblgen-lsp-server": {
       "settings": {
+        "path": "/path/to/tblgen-lsp-server",
         "compilation_database": "/path/to/build/tablegen_compile_commands.yml",
         "extra_dirs": [
           "/path/to/llvm-project/llvm/include",
@@ -99,6 +98,7 @@ Both `tblgen-lsp-server` and `mlir-pdll-lsp-server` need a compilation database 
     },
     "mlir-pdll-lsp-server": {
       "settings": {
+        "path": "/path/to/mlir-pdll-lsp-server",
         "compilation_database": "/path/to/build/pdll_compile_commands.yml",
         "extra_dirs": [
           "/path/to/llvm-project/mlir/include"
@@ -109,26 +109,7 @@ Both `tblgen-lsp-server` and `mlir-pdll-lsp-server` need a compilation database 
 }
 ```
 
-> If `binary.arguments` contains the same flag, it takes precedence over `settings` and auto-detection.
-
-<details>
-<summary><strong>Advanced: verbose logging</strong></summary>
-
-All three servers accept `--log={error|info|verbose}`:
-
-```json
-{
-  "lsp": {
-    "mlir-lsp-server": {
-      "binary": {
-        "arguments": ["--log=verbose"]
-      }
-    }
-  }
-}
-```
-
-</details>
+> Zed's native `binary.path` and `binary.arguments` fields still work and take precedence when set.
 
 After changing settings, open the command palette (`Cmd+Shift+P` on macOS, `Ctrl+Shift+P` on Linux/Windows) and run `zed: restart language server` to apply them.
 

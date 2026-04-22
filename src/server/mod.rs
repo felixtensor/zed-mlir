@@ -10,19 +10,31 @@ use zed_extension_api::{self as zed, serde_json, settings::LspSettings, Result, 
 /// "lsp": {
 ///   "tblgen-lsp-server": {
 ///     "settings": {
+///       "path": "/path/to/tblgen-lsp-server",
 ///       "compilation_database": "build/tablegen_compile_commands.yml",
-///       "extra_dirs": ["include/"]
+///       "extra_dirs": ["include/"],
+///       "log": "verbose",
+///       "pretty": true
 ///     }
 ///   }
 /// }
 /// ```
+///
+/// All fields are optional. Fields that do not apply to a given server
+/// (e.g. `compilation_database` for `mlir-lsp-server`) are silently ignored.
 #[derive(Debug, Default, Deserialize)]
 pub struct ServerSettings {
-    /// Path to the compilation-database YAML file.
+    /// Path to the server binary (alternative to `binary.path`).
+    pub path: Option<String>,
+    /// Path to the compilation-database YAML file (tblgen / pdll only).
     pub compilation_database: Option<String>,
-    /// Extra include directories passed via `--*-extra-dir`.
+    /// Extra include directories (tblgen / pdll only).
     #[serde(default)]
     pub extra_dirs: Vec<String>,
+    /// Log verbosity: `"error"`, `"info"`, or `"verbose"`.
+    pub log: Option<String>,
+    /// Pretty-print JSON output from the server.
+    pub pretty: Option<bool>,
 }
 
 mod mlir;
@@ -92,15 +104,6 @@ pub trait LanguageServer {
 
         let user_binary = lsp_settings.as_ref().and_then(|s| s.binary.as_ref());
 
-        let command = match user_binary.and_then(|b| b.path.clone()) {
-            Some(path) => path,
-            None => self.resolve_from_path(worktree, path_cache)?,
-        };
-
-        let mut args = user_binary
-            .and_then(|b| b.arguments.clone())
-            .unwrap_or_default();
-
         // Parse structured settings from `lsp.<id>.settings`.
         let settings: ServerSettings = lsp_settings
             .as_ref()
@@ -110,17 +113,27 @@ pub trait LanguageServer {
             .unwrap_or_default()
             .unwrap_or_default();
 
+        // --- binary path: binary.path > settings.path > $PATH ---
+        let command = match user_binary.and_then(|b| b.path.clone()) {
+            Some(path) => path,
+            None => match settings.path {
+                Some(ref path) => path.clone(),
+                None => self.resolve_from_path(worktree, path_cache)?,
+            },
+        };
+
+        let mut args = user_binary
+            .and_then(|b| b.arguments.clone())
+            .unwrap_or_default();
+
         // --- compilation database ---
         if let Some(flag) = self.compilation_db_flag() {
             let already_set = args.iter().any(|a| a.starts_with(flag));
             if !already_set {
-                // Try structured setting first, then auto-detect.
-                let db_path = settings
-                    .compilation_database
-                    .or_else(|| {
-                        self.compilation_db_filename()
-                            .and_then(|f| detect_compilation_db(worktree, f))
-                    });
+                let db_path = settings.compilation_database.or_else(|| {
+                    self.compilation_db_filename()
+                        .and_then(|f| detect_compilation_db(worktree, f))
+                });
                 if let Some(path) = db_path {
                     args.push(format!("{flag}={path}"));
                 }
@@ -131,6 +144,18 @@ pub trait LanguageServer {
         if let Some(flag) = self.extra_dir_flag() {
             for dir in &settings.extra_dirs {
                 args.push(format!("{flag}={dir}"));
+            }
+        }
+
+        // --- common flags: log, pretty ---
+        if let Some(ref level) = settings.log {
+            if !args.iter().any(|a| a.starts_with("--log")) {
+                args.push(format!("--log={level}"));
+            }
+        }
+        if settings.pretty == Some(true) {
+            if !args.iter().any(|a| a == "--pretty") {
+                args.push("--pretty".to_string());
             }
         }
 
