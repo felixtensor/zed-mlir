@@ -19,5 +19,9 @@ impl LanguageServer for TablegenServer {
     fn compilation_db_filename(&self) -> Option<&'static str> {
         Some("tablegen_compile_commands.yml")
     }
+
+    fn extra_dir_flag(&self) -> Option<&'static str> {
+        Some("--tablegen-extra-dir")
+    }
 }
 
