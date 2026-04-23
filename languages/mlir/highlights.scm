@@ -36,6 +36,16 @@
   (none_type)
 ] @type.builtin
 
+;; Composite types not always reachable through (builtin_type)
+[
+  (complex_type)
+  (memref_type)
+  (tensor_type)
+  (vector_type)
+  (tuple_type)
+  (opaque_type)
+] @type.builtin
+
 [
   (type_alias)
   (dialect_type)
