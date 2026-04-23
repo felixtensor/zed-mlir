@@ -117,27 +117,27 @@ After changing settings, open the command palette (`Cmd+Shift+P` on macOS, `Ctrl
 
 ### Go to Definition
 
-https://github.com/user-attachments/assets/97f13623-d392-4c7a-9c26-de4f7484af50
+![Go to Definition](https://github.com/user-attachments/assets/88ce2c21-1d4b-4ef3-921f-77edf6aea86a)
 
 ### Find References
 
-https://github.com/user-attachments/assets/6dcd6cf9-8b9d-4d0c-8555-749d6da5ed56
+![Find References](https://github.com/user-attachments/assets/98e8634a-569c-44eb-9f38-34a5cab7ee24)
 
 ### Hover / Signature
 
-https://github.com/user-attachments/assets/96413a29-765b-4790-8f6d-8ffabd862f05
+![Hover / Signature](https://github.com/user-attachments/assets/72278371-8e92-46dc-8aa8-82413c0da439)
 
 ### Completion
 
-https://github.com/user-attachments/assets/e3c57915-7c78-4105-8b0f-1a0e81fb802f
+![Completion](https://github.com/user-attachments/assets/2bd1a63a-d512-4f25-88fa-3c4d58fe5b5c)
 
 ### Diagnostics
 
-https://github.com/user-attachments/assets/da49abbb-9c66-422c-9b1d-dc6b6e66fc62
+![Diagnostics](https://github.com/user-attachments/assets/13859477-98fa-49c1-bd4e-b766956db866)
 
 ### Symbol Outline
 
-https://github.com/user-attachments/assets/84bedf58-82f9-466c-a163-dba9d0fb8412
+![Symbol Outline](https://github.com/user-attachments/assets/d8c6bde8-e90f-4f03-8399-2ce9914e3c94)
 
 ## Acknowledgements
 
