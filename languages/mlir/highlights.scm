@@ -105,6 +105,9 @@
 ;; catch-all so it wins under last-match-wins.
 (dense_resource_literal (bare_id) @constant.builtin)
 
+;; Dictionary attribute keys (e.g. `predicate` in `{predicate = 1}`)
+(attribute_entry (bare_id) @attribute)
+
 ;; Brackets
 [
   "("
