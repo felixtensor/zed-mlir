@@ -81,6 +81,8 @@
 ;; Builtin attribute and affine keywords
 (affine_map "affine_map" @keyword)
 (affine_set "affine_set" @keyword)
+(affine_map ["symbol" "max" "min"] @keyword)
+(affine_set ["symbol" "max" "min"] @keyword)
 (strided_layout "strided" @keyword)
 (strided_layout "offset" @keyword)
 ["ceildiv" "floordiv" "mod"] @operator
