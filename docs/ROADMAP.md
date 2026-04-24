@@ -41,6 +41,6 @@ This document tracks the planned direction of **MLIR Suite**. Items are grouped 
 
 ## How to propose changes
 
-Open an issue at [felixtensor/zed-mlir](https://github.com/felixtensor/zed-mlir/issues) with:
+Open an issue at [felixtensor/zed-mlir-suite](https://github.com/felixtensor/zed-mlir-suite/issues) with:
 - What problem you hit or what workflow you want,
 - Any pointers to upstream LLVM docs or related issues.

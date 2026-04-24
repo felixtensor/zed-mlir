@@ -1,4 +1,4 @@
-# zed-mlir
+# zed-mlir-suite
 
 [MLIR](https://mlir.llvm.org), TableGen, and PDLL support for the [Zed](https://zed.dev) editor.
 
@@ -25,7 +25,7 @@ Install from Zed's Extensions panel (`Cmd+Shift+X` on macOS, `Ctrl+Shift+X` on L
 To install locally as a dev extension (for development or testing):
 
 ```bash
-git clone https://github.com/felixtensor/zed-mlir.git
+git clone https://github.com/felixtensor/zed-mlir-suite.git
 ```
 
 In Zed, open **Extensions** → **Install Dev Extension** → select the cloned directory.
@@ -158,7 +158,7 @@ For MLIR tooling in other editors, see:
 
 This extension is actively developed. See the [roadmap](docs/ROADMAP.md) for what's planned next. Contributions of all sizes are welcome — bug reports, feature requests, and pull requests:
 
-- [Open an issue](https://github.com/felixtensor/zed-mlir/issues)
+- [Open an issue](https://github.com/felixtensor/zed-mlir-suite/issues)
 - Submit a pull request with your improvements
 
 ## License
