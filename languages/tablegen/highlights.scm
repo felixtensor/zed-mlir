@@ -119,6 +119,7 @@
 
 ;; Literals
 (string_literal) @string
+(escape_sequence) @string.escape
 (code_chunk) @string
 (integer_literal) @number
 (boolean_literal) @boolean
