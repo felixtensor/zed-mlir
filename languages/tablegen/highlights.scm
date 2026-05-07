@@ -119,7 +119,7 @@
 
 ;; Literals
 (string_literal) @string
-(code_chunk) @embedded
+(code_chunk) @string
 (integer_literal) @number
 (boolean_literal) @boolean
 (unset_value) @constant.builtin
