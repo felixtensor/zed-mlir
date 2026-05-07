@@ -39,10 +39,10 @@
 ;; same identifier node override this fallback.
 (identifier) @variable
 
-;; Variable substitution inside code blocks (`$foo` or `$0`)
-(variable_substitution "$" @punctuation.special)
-(variable_substitution) @variable.parameter
-(variable_name) @variable.parameter
+;; Variable substitution (`$foo` / `$0` inside code_literal, `$bare` in DAG)
+;; These are single-token nodes in the grammar, matching VS Code's `(\$\w+)\b`.
+(variable_substitution) @variable.special
+(variable_name) @variable.special
 
 ;; Template parameters
 (template_parameter (identifier) @variable.parameter)
