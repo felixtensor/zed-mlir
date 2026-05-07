@@ -145,7 +145,7 @@ This extension builds on:
 
 - [MLIR](https://mlir.llvm.org) — the multi-level intermediate representation framework from the LLVM project.
 - [tree-sitter-mlir](https://github.com/felixtensor/tree-sitter-mlir) — Tree-sitter grammar for MLIR.
-- [tree-sitter-tablegen](https://github.com/tree-sitter-grammars/tree-sitter-tablegen) — Tree-sitter grammar for TableGen.
+- [tree-sitter-tablegen](https://github.com/felixtensor/tree-sitter-tablegen) — Tree-sitter grammar for TableGen.
 - [tree-sitter-pdll](https://github.com/felixtensor/tree-sitter-pdll) — Tree-sitter grammar for PDLL.
 - The three LSP servers (`mlir-lsp-server`, `mlir-pdll-lsp-server`, `tblgen-lsp-server`) are part of the [LLVM project](https://github.com/llvm/llvm-project).
 

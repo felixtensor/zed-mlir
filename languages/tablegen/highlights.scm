@@ -1,11 +1,18 @@
-;; Preprocessor
+;; Comments
+(line_comment) @comment
+(block_comment) @comment
 
-(preprocessor_directive) @preproc
+;; Preprocessor
+"#define"  @keyword.directive
+"#ifdef"   @keyword.directive
+"#ifndef"  @keyword.directive
+"#else"    @keyword.directive
+"#endif"   @keyword.directive
+(macro_name) @constant.macro
 
 "include" @keyword.import
 
 ;; Keywords
-
 [
   "assert"
   "class"
@@ -15,115 +22,124 @@
   "def"
   "defm"
   "defset"
+  "deftype"
   "defvar"
-] @keyword
-
-"in" @keyword.operator
-
-;; Conditionals
-
-[
+  "dump"
+  "foreach"
   "if"
   "else"
   "then"
-] @keyword.control
+  "in"
+] @keyword
 
-;; Loops
-
-"foreach" @keyword.control
+(let_mode) @keyword.modifier
 
 ;; Identifier fallback — keep BEFORE the specific identifier rules below.
 ;; Zed's tree-sitter highlighter uses last-match-wins: later captures for the
 ;; same identifier node override this fallback.
 (identifier) @variable
 
-(var) @variable.special
+;; Variable substitution inside code blocks (`$foo` or `$0`)
+(variable_substitution "$" @punctuation.special)
+(variable_substitution) @variable.parameter
+(variable_name) @variable.parameter
 
 ;; Template parameters
-(template_arg (identifier) @variable.parameter)
+(template_parameter (identifier) @variable.parameter)
 
-;; Member access: `Foo.bar` — the `.bar` identifier in a value_suffix
-(value_suffix (identifier) @variable.member)
+;; Foreach iteration variable — the first identifier child before `=`
+(foreach_statement (identifier) @variable.parameter)
+
+;; Member access: `Foo.bar`
+(value_suffix_dot (identifier) @variable.member)
+
+;; Field declarations
+(field_declaration (identifier) @property)
+
+;; Named arguments
+(named_argument (identifier) @field)
+
+;; Let / defvar bindings — variable-like definitions, not member access
+(let_assignment (identifier) @variable)
+(let_item (identifier) @variable)
+(defvar_statement (identifier) @variable)
 
 ;; Types
-
 (type) @type
 
 [
   "bit"
+  "bits"
   "int"
   "string"
   "dag"
-  "bits"
-  "list"
   "code"
+  "list"
 ] @type.builtin
 
-(class name: (identifier) @type)
-(multiclass name: (identifier) @type)
-(def name: (value (_) @type))
-(defm name: (value (_) @type))
-(defset name: (identifier) @type)
-(parent_class_list (identifier) @type (value (_) @type)?)
-(anonymous_record (identifier) @type)
-(anonymous_record (value (_) @type))
+;; Definition names — parser-aligned highlight groups
+(class_definition (identifier) @type.definition)
+(def_definition (identifier) @constant)
+(multiclass_definition (identifier) @function.macro)
+(defm_definition (identifier) @type)
+(defset_definition (identifier) @type)
+(deftype_definition (identifier) @type)
 
+;; Parent class references
+(parent_class (identifier) @type)
+
+;; Anonymous records
+(anonymous_record (identifier) @type)
+
+;; UPPER_CASE identifiers as types
 ((identifier) @type
   (#match? @type "^_*[A-Z][A-Z0-9_]+$"))
 
-;; Fields
-
-(instruction (identifier) @variable.member)
-(let_instruction (identifier) @variable.member)
-(let_item (identifier) @variable.member)
-
 ;; Bang operators / built-in functions
-
-[
-  (bang_operator)
-  (cond_operator)
-] @function.builtin
+(bang_operator) @function.builtin
+"!cond" @function.builtin
 
 ;; Operators
-
 [
   "="
   "#"
   "-"
-  ":"
   "..."
 ] @operator
 
 ;; Punctuation
-
-[ "{" "}" ] @punctuation.bracket
-[ "[" "]" ] @punctuation.bracket
-[ "(" ")" ] @punctuation.bracket
-[ "<" ">" ] @punctuation.bracket
+[ "{" "}" "[" "]" "(" ")" "<" ">" ] @punctuation.bracket
 
 [
   "."
   ","
   ";"
+  ":"
 ] @punctuation.delimiter
 
 "!" @punctuation.special
 
 ;; Literals
+(string_literal) @string
+(code_chunk) @embedded
+(integer_literal) @number
+(boolean_literal) @boolean
+(unset_value) @constant.builtin
 
-(string) @string
-(code) @string.special
-(integer) @number
-["true" "false"] @boolean
-(uninitialized_value) @constant.builtin
+;; ─── MLIR dialect-flavor predicates ─────────────────────────────────────────
+;; (Per spec §2.1: dialect identification is queries-side, not grammar-side.)
 
-;; Comments
+;; Common MLIR ODS base classes
+(parent_class (identifier) @type.builtin
+  (#match? @type.builtin "^(Op|Pattern|Pat|Intrinsic|Attr|AttrDef|TypeDef|Dialect|Interface|OpInterface|AttrInterface|TypeInterface|Constraint|Pred|Property)$"))
 
-[
-  (comment)
-  (multiline_comment)
-] @comment
+;; ODS def names that follow the "Op" / "Type" / "Attr" suffix convention
+(def_definition (identifier) @type
+  (#match? @type "Op$|Type$|Attr$"))
+
+;; Common ODS field names
+(field_declaration (identifier) @property.special
+  (#match? @property.special "^(arguments|results|regions|successors|summary|description|hasVerifier|hasCanonicalizer|hasCanonicalizeMethod|assemblyFormat|extraClassDeclaration|builders|hasFolder)$"))
 
 ;; Errors
-
 (ERROR) @error

@@ -11,8 +11,8 @@ repository = "https://github.com/felixtensor/tree-sitter-mlir"
 commit = "79b1576d428873eb2bb8c90079677210843952c7"
 
 [grammars.tablegen]
-repository = "https://github.com/tree-sitter-grammars/tree-sitter-tablegen"
-commit = "b1170880c61355aaf38fc06f4af7d3c55abdabc4"
+repository = "https://github.com/felixtensor/tree-sitter-tablegen"
+commit = "59401bda6d67a41f6845e10307d3a3657eac1755"
 
 [grammars.pdll]
 repository = "https://github.com/felixtensor/tree-sitter-pdll"
