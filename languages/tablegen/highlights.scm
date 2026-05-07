@@ -117,8 +117,6 @@
   ":"
 ] @punctuation.delimiter
 
-"!" @punctuation.special
-
 ;; Literals
 (string_literal) @string
 (code_chunk) @embedded
