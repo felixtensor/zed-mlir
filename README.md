@@ -1,5 +1,13 @@
 # zed-mlir-suite
 
+[![EN](https://img.shields.io/badge/lang-EN-blue?style=flat-square)](README.md)
+[![中文](https://img.shields.io/badge/lang-中文-lightgrey?style=flat-square)](docs/README_CN.md)
+
+[![CI](https://img.shields.io/github/actions/workflow/status/felixtensor/zed-mlir-suite/ci.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI)](https://github.com/felixtensor/zed-mlir-suite/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/github/v/tag/felixtensor/zed-mlir-suite?style=flat-square&logo=github&label=version)](https://github.com/felixtensor/zed-mlir-suite/tags)
+[![License](https://img.shields.io/badge/license-Apache%202.0%20with%20LLVM%20Exceptions-blue?style=flat-square&logo=apache&logoColor=white)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/felixtensor/zed-mlir-suite?style=flat-square&logo=github)](https://github.com/felixtensor/zed-mlir-suite/stargazers)
+
 [MLIR](https://mlir.llvm.org), TableGen, and PDLL support for the [Zed](https://zed.dev) editor.
 
 ## Features
