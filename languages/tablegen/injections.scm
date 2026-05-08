@@ -17,7 +17,7 @@
 (field_declaration
   (identifier) @_name
   (code_literal (code_chunk) @injection.content)
-  (#match? @_name "^(extraClassDeclaration|extraClassDefinition|extraTraitClassDeclaration|builders|verifier)$")
+  (#match? @_name "^(extraClassDeclaration|extraClassDefinition|extraTraitClassDeclaration|extraSharedClassDeclaration|builders|verify)$")
   (#set! injection.language "cpp")
   (#set! injection.combined))
 
@@ -26,16 +26,16 @@
 (let_assignment
   (identifier) @_name
   (code_literal (code_chunk) @injection.content)
-  (#match? @_name "^(extraClassDeclaration|extraClassDefinition|extraTraitClassDeclaration|builders|verifier)$")
+  (#match? @_name "^(extraClassDeclaration|extraClassDefinition|extraTraitClassDeclaration|extraSharedClassDeclaration|builders|verify)$")
   (#set! injection.language "cpp")
   (#set! injection.combined))
 
 ;; Case 4: let-item inside a comma-separated `let ... in { }` block.
 ;;   let builders = [{ ... }],
-;;       verifier = [{ ... }] in { ... }
+;;       verify = [{ ... }] in { ... }
 (let_item
   (identifier) @_name
   (code_literal (code_chunk) @injection.content)
-  (#match? @_name "^(extraClassDeclaration|extraClassDefinition|extraTraitClassDeclaration|builders|verifier)$")
+  (#match? @_name "^(extraClassDeclaration|extraClassDefinition|extraTraitClassDeclaration|extraSharedClassDeclaration|builders|verify)$")
   (#set! injection.language "cpp")
   (#set! injection.combined))
