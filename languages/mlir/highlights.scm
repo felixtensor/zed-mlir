@@ -46,6 +46,14 @@
   (opaque_type)
 ] @type.builtin
 
+;; 'x' separator inside dimension lists — render as delimiter rather than
+;; inheriting @type.builtin from the (memref_type)/(tensor_type)/(vector_type)
+;; block above. Must appear after that block under last-match-wins.
+;; @cap binds to the "x" literal (parent-internal anonymous token); placing
+;; it outside an alternation would capture the parent node instead.
+(dim_list "x" @punctuation.delimiter)
+(vector_dim_list "x" @punctuation.delimiter)
+
 [
   (type_alias)
   (dialect_type)
