@@ -52,6 +52,7 @@
 ;; @cap binds to the "x" literal (parent-internal anonymous token); placing
 ;; it outside an alternation would capture the parent node instead.
 (dim_list "x" @punctuation.delimiter)
+(dimension_separator) @punctuation.delimiter
 (vector_dim_list "x" @punctuation.delimiter)
 
 [
