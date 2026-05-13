@@ -110,6 +110,13 @@ pub trait LanguageServer {
             .and_then(|s| s.settings.clone())
             .map(serde_json::from_value)
             .transpose()
+            .map_err(|err| {
+                eprintln!(
+                    "[mlir-suite] failed to parse lsp.{}.settings, \
+                     using defaults: {err}",
+                    self.id(),
+                );
+            })
             .unwrap_or_default()
             .unwrap_or_default();
 
@@ -157,10 +164,15 @@ pub trait LanguageServer {
             args.push("--pretty".to_string());
         }
 
-        let env = user_binary
-            .and_then(|b| b.env.clone())
-            .map(|m| m.into_iter().collect::<Vec<(String, String)>>())
-            .unwrap_or_default();
+        // Start with the worktree's shell environment and overlay
+        // user-specified env vars from `binary.env` on top.
+        let mut env: Vec<(String, String)> = worktree.shell_env().into_iter().collect();
+        if let Some(user_env) = user_binary.and_then(|b| b.env.clone()) {
+            for (k, v) in user_env {
+                env.retain(|(ek, _)| ek != &k);
+                env.push((k, v));
+            }
+        }
 
         Ok(zed::Command { command, args, env })
     }
