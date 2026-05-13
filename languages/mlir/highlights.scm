@@ -79,13 +79,15 @@
   (uninitialized_literal)
 ] @constant.builtin
 
+;; Attribute aliases and dialect attributes are values (`#map`,
+;; `#dialect.attr<...>`), closer to constants than to dictionary keys.
+;; Do not capture `attribute_alias_def` or `dictionary_attribute` as whole
+;; nodes here: both are too broad and would override more specific captures
+;; inside their value/key spans under Zed's last-match-wins semantics.
 [
   (attribute_alias)
-  (attribute_alias_def)
   (dialect_attribute)
-] @attribute
-
-(dictionary_attribute) @attribute
+] @constant.builtin
 
 ;; Builtin attribute and affine keywords
 (affine_map "affine_map" @keyword)
@@ -129,7 +131,8 @@
 (dense_resource_literal (bare_id) @constant.builtin)
 
 ;; Dictionary attribute keys (e.g. `predicate` in `{predicate = 1}`)
-(attribute_entry (bare_id) @attribute)
+;; are properties, distinct from `#...` attribute values.
+(attribute_entry (bare_id) @property)
 
 ;; Brackets
 [
