@@ -101,6 +101,8 @@
 
 ;; Strings
 (string_literal) @string
+(escape_sequence) @string.escape
+(invalid_escape) @error
 
 ;; Functions and symbols
 ;; func.func @name  →  @string.special.symbol  (function definition name)
