@@ -105,19 +105,22 @@ pub trait LanguageServer {
         let user_binary = lsp_settings.as_ref().and_then(|s| s.binary.as_ref());
 
         // Parse structured settings from `lsp.<id>.settings`.
+        // A parse error is logged and downgraded to defaults so a malformed
+        // settings entry never blocks the server from starting.
         let settings: ServerSettings = lsp_settings
             .as_ref()
             .and_then(|s| s.settings.clone())
-            .map(serde_json::from_value)
-            .transpose()
-            .map_err(|err| {
-                eprintln!(
-                    "[mlir-suite] failed to parse lsp.{}.settings, \
-                     using defaults: {err}",
-                    self.id(),
-                );
+            .map(|value| match serde_json::from_value(value) {
+                Ok(parsed) => parsed,
+                Err(err) => {
+                    eprintln!(
+                        "[mlir-suite] failed to parse lsp.{}.settings, \
+                         using defaults: {err}",
+                        self.id(),
+                    );
+                    ServerSettings::default()
+                }
             })
-            .unwrap_or_default()
             .unwrap_or_default();
 
         // --- binary path: binary.path > settings.path > $PATH ---
