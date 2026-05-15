@@ -125,27 +125,27 @@ cmake --build . --target mlir-lsp-server mlir-pdll-lsp-server tblgen-lsp-server
 
 ### 跳转到定义
 
-![Go to Definition](https://github.com/user-attachments/assets/88ce2c21-1d4b-4ef3-921f-77edf6aea86a)
+![Go to Definition](https://raw.githubusercontent.com/felixtensor/zed-mlir-suite/assets/screenshots/go-to-definition.gif)
 
 ### 查找引用
 
-![Find References](https://github.com/user-attachments/assets/98e8634a-569c-44eb-9f38-34a5cab7ee24)
+![Find References](https://raw.githubusercontent.com/felixtensor/zed-mlir-suite/assets/screenshots/find-references.gif)
 
 ### 悬停 / 签名
 
-![Hover / Signature](https://github.com/user-attachments/assets/72278371-8e92-46dc-8aa8-82413c0da439)
+![Hover / Signature](https://raw.githubusercontent.com/felixtensor/zed-mlir-suite/assets/screenshots/hover.gif)
 
 ### 补全
 
-![Completion](https://github.com/user-attachments/assets/2bd1a63a-d512-4f25-88fa-3c4d58fe5b5c)
+![Completion](https://raw.githubusercontent.com/felixtensor/zed-mlir-suite/assets/screenshots/completion.gif)
 
 ### 诊断
 
-![Diagnostics](https://github.com/user-attachments/assets/13859477-98fa-49c1-bd4e-b766956db866)
+![Diagnostics](https://raw.githubusercontent.com/felixtensor/zed-mlir-suite/assets/screenshots/diagnostics.gif)
 
 ### 符号大纲
 
-![Symbol Outline](https://github.com/user-attachments/assets/d8c6bde8-e90f-4f03-8399-2ce9914e3c94)
+![Symbol Outline](https://raw.githubusercontent.com/felixtensor/zed-mlir-suite/assets/screenshots/outline.gif)
 
 ## 致谢
 
