@@ -1,43 +1,50 @@
 # Roadmap
 
-This document tracks the planned direction of **MLIR Suite**. Items are grouped by priority, not by commitment — timing depends on upstream LLVM releases, user feedback, and available time. Nothing here is a promise.
+This document tracks the planned direction of **MLIR Suite**. Items are grouped by priority, not by commitment — timing depends on upstream LLVM releases, Zed extension-API surface, user feedback, and available time. Nothing here is a promise.
 
-## Shipped
+For shipped milestones and tag-by-tag release history, see [CHANGELOG.md](../CHANGELOG.md).
 
-### v0.5.0 — LSP foundation
-- Three language servers wired up (`mlir-lsp-server`, `mlir-pdll-lsp-server`, `tblgen-lsp-server`) with per-server binary path override and argument passthrough via `settings.json`.
-- Rebrand to `mlir-suite` with a feature-focused README and initial screenshots section.
-- `extension.toml` cleaned up (`commit` fields, full `[language_servers.*]` tables).
+## Near-term
 
-### v0.4.0 — PDLL support
-- Independent PDLL grammar, highlights, and symbol outline.
-- TableGen grammar fixes (member access, let-item fields).
-- MLIR grammar reaches 100% pass rate on 403 official test files.
+### v0.6.0 — First-class TableGen navigation
 
-## Near-term (v0.6.x)
+- **`outline.scm` for TableGen.** MLIR and PDLL already populate the symbol outline; TableGen does not. Add captures for named `class`, `def`, `defm`, `multiclass`, `defset`, and useful top-level `defvar` / `deftype` declarations so real symbols show up in the outline panel and `Cmd/Ctrl+Shift+O` symbol picker. Treat `let ... in`, `foreach`, and `if` blocks as context only when useful; they are not standalone symbols. Skip anonymous `def` / `defm` records unless a stable, readable label can be produced.
+- **TableGen navigation docs and screenshots.** Update the README / Chinese README with the new TableGen outline behaviour and add a screenshot or short example that shows records appearing in Zed's outline / symbol picker.
+- **Corpus-backed TableGen query validation.** Validate the outline query and any supporting grammar fixes against a curated set of real MLIR / LLVM TableGen files, especially ODS-heavy dialect, op, pass, and interface definitions. Fix grammar or query edge cases surfaced by that validation before cutting v0.6.0.
 
-- **Structured compilation-database settings.** Today users pass `--pdll-compilation-database=…` / `--tablegen-compilation-database=…` / `--*-extra-dir=…` as raw CLI arguments. Add a structured schema in `settings.json` and translate it into CLI flags automatically.
-- **Auto-detect `build/*_compile_commands.yml`** in the workspace when no explicit database is configured.
-- **Continued language highlight & editor-capability work.** A steady stream of small, focused improvements: query-level highlight refinements for PDLL and TableGen, new capability files (shell injection on `// RUN:` comments, `folds.scm` for block folding, `outline.scm` for TableGen), and incremental grammar fixes.
-- **MLIR inside C++ raw strings (`R"mlir(…)mlir"`).** Zed's bundled C++ grammar already injects `raw_string_content` using the delimiter as `@injection.language`. Since this extension registers the `mlir` grammar, the injection may already work out of the box. Needs verification with a real `.cpp` file containing `R"mlir(...)mlir"`.
+### v0.6.x follow-ups
+
+- **Investigate lit-aware highlighting for `// RUN:` lines.** MLIR / PDLL / TableGen tests commonly use LLVM lit `RUN:` directives, but those directives are not plain bash: they support lit substitutions (`%s`, `%t`, `%{...}`, `%(line)`), continuations, and test-suite-specific tool substitution. Explore whether `highlights.scm` / `injections.scm` can highlight command-like structure without misrepresenting lit syntax as generic shell. Prefer explicit lit substitution captures and only inject `shellscript` into command spans if it behaves correctly on real LLVM / MLIR tests.
+- **Investigate lit-aware runnables for tests.** Zed `runnables.scm` can surface runnable syntax, but executing a single `RUN:` line correctly requires lit substitution and test-suite configuration, not just passing the comment payload to a shell. Start with a runnable for the whole current lit test file (for example, `llvm-lit $ZED_FILE`) and evaluate whether a small lit-aware helper is needed before exposing individual `RUN:` pipelines.
+- **Verify MLIR-in-C++ raw strings.** Zed's bundled C++ grammar already injects `raw_string_content` using the delimiter as `@injection.language`. Since this extension registers `mlir`, the injection should "just work" inside `R"mlir(…)mlir"`, but it has not been confirmed end-to-end. Verify with a real `.cpp` file and document the result; if the wiring is missing, file an upstream issue.
+- **Continued highlight & query polish.** Steady, focused improvements across the three grammars and capability files as edge cases surface.
 
 ## Mid-term
 
-- **Switch to [`felixtensor/tree-sitter-tablegen`](https://github.com/felixtensor/tree-sitter-tablegen) as the TableGen grammar.** The current upstream grammar was developed against a narrow corpus and frequently fails on real-world `.td` files outside MLIR. Replace the pin with our own maintained grammar, validated against four corpora and kept passing:
+- **Vim text objects (`textobjects.scm`).** Add `@function.around` / `@function.inside`, `@class.around` / `@class.inside`, and `@comment.around` captures with language-specific semantics: `func.func` as a function, MLIR modules / regions as larger class-like sections, TableGen `class` / named `def` records as sections, and PDLL `Pattern` / `Constraint` / `Rewrite` as top-level function-like sections. Do not treat every MLIR block as a class-level object unless testing shows the motions stay useful.
+- **Investigate LSP initialization / workspace configuration.** The extension currently translates settings into CLI flags, which is the documented path for the MLIR-related servers. The Zed extension API exposes `language_server_initialization_options` and `language_server_workspace_configuration`; verify whether `mlir-lsp-server`, `mlir-pdll-lsp-server`, and `tblgen-lsp-server` actually consume compilation-database / extra-include configuration over LSP before migrating anything. Keep CLI flags as the stable path unless upstream support is confirmed.
+- **Custom completion / symbol labels.** Implement `label_for_completion` / `label_for_symbol` where Zed's API can improve readability of MLIR completions and symbols — e.g. distinguish dialect prefixes and render attribute/type details compactly. Treat UI column alignment as best-effort because final layout is controlled by Zed.
+- **Semantic-token defaults.** If `mlir-lsp-server` reports semantic tokens with useful custom token types, ship a `semantic_token_rules.json` with sensible defaults so Zed's `combined` semantic-token mode layers cleanly on top of the tree-sitter highlights without users having to write rules by hand.
+- **Inlay hints.** Verify and document PDLL inlay hints from `mlir-pdll-lsp-server`; add MLIR inlay hints for SSA value types and block-argument types only if / when `mlir-lsp-server` supports `textDocument/inlayHint`.
+- **`.mlirbc` bytecode support.** Track Zed and `mlir-lsp-server` support for opening MLIR bytecode as editable text. `mlir-lsp-server` can inspect bytecode, but the extension still needs a Zed-side way to hand a binary `.mlirbc` buffer to the server as an editable text document; do not simply register `.mlirbc` as normal text unless that path is verified.
+- **TableGen grammar — broaden corpus coverage.** Beyond the focused v0.6.0 navigation validation set, keep extending and validating [`felixtensor/tree-sitter-tablegen`](https://github.com/felixtensor/tree-sitter-tablegen) against four corpora and gate version bumps on a CI harness that asserts zero `ERROR` nodes:
   - **MLIR TableGen** — dialect / op / pass definitions under `mlir/include/mlir/` and `mlir/test/`
   - **LLVM TableGen** — target backends under `llvm/lib/Target/*/` (heavy use of intrinsics, patterns, register classes)
   - **Clang TableGen** — `clang/include/clang/Basic/{Attr,Diagnostic,StmtNodes,…}.td`
   - **LLDB TableGen** — command option definitions under `lldb/source/Commands/Options.td` and related
-  A CI harness must parse a curated subset of each and assert zero `ERROR` nodes before the grammar pin is bumped.
-- **`.mlirbc` bytecode support.** Render MLIR bytecode as text via `mlir-lsp-server`. Zed's extension API does not currently expose a custom-editor surface; add support when the API is available.
-- **Inlay hints** for SSA value types and block arguments, pending `mlir-lsp-server` support for the inlay-hint LSP request.
+
+  Scope the zero-`ERROR` gate to curated, valid source corpora; deliberately invalid diagnostic tests should be tracked separately.
 
 ## Ideas (unscored)
 
-- Code-lens links from a PDLL `Pattern` to the TableGen op definition it rewrites.
-- Quick-fix for "missing `include`" in TableGen (auto-insert the canonical header path).
-- Dialect-aware highlighting inside MLIR string attributes that embed recognized DSLs.
-- **LSP settings-change behavior.** Zed's core already auto-restarts language servers when binary paths or initialization options change. The extension API does not expose hooks to intercept settings changes or present custom restart prompts, so finer-grained control (prompt / auto-restart / ignore) is not implementable by extensions today.
+- Code-lens-style links from a PDLL `Pattern` to the TableGen op definition it rewrites, pending a suitable Zed extension API surface. First verify what `mlir-pdll-lsp-server` already provides via go-to-definition.
+- Quick-fix for "missing `include`" in TableGen (auto-insert the canonical header path), most likely as an upstream `tblgen-lsp-server` code action rather than a Zed-only feature.
+- Dialect-aware highlighting inside MLIR string attributes that embed recognized DSLs. Keep this opt-in / whitelist-driven so ordinary MLIR string attributes are not over-highlighted.
+- Block folding driven by tree-sitter regions. Zed currently derives folds from indentation and does not document a `folds.scm` capability for extensions; revisit if/when one is exposed.
+
+## Out of scope (today)
+
+- **LSP settings-change behaviour.** Zed documents initialization options as startup-time configuration that requires a language-server restart to reapply. The extension API does not expose hooks to intercept settings changes or present custom restart prompts, so finer-grained control (prompt / auto-restart / ignore) is not implementable by extensions today.
 
 ## How to propose changes
 
