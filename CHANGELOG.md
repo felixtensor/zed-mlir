@@ -1,8 +1,8 @@
 # Changelog
 
 This document records shipped project history reconstructed from the local Git
-tags. Dates are tag creation dates. The earliest tagged release, v0.2.0,
-contains the initial project setup up to that tag.
+tags. Dates are tag or commit dates. The v0.1.0 tag was restored
+retroactively on the last commit that still declared version 0.1.0.
 
 For future plans, see [docs/ROADMAP.md](docs/ROADMAP.md).
 
@@ -136,6 +136,22 @@ For future plans, see [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## [v0.2.0] - 2026-03-31
 
+### Changed
+
+- Bumped the extension and crate version to 0.2.0.
+- Synced the MLIR grammar revision with the latest `tree-sitter-mlir` changes
+  available at the time.
+- Updated MLIR language configuration for Zed compatibility, including
+  `line_comments`, word characters, autoclose behavior, and quote exclusions in
+  comments / strings.
+- Simplified MLIR syntax highlighting after the grammar update.
+
+### Fixed
+
+- Fixed installation failures and version metadata issues.
+
+## [v0.1.0] - 2026-03-12
+
 ### Added
 
 - Added the initial Rust-based Zed extension structure.
@@ -143,10 +159,11 @@ For future plans, see [docs/ROADMAP.md](docs/ROADMAP.md).
   bracket matching.
 - Added the initial README, license, Cargo manifest, and extension metadata.
 
-### Fixed
+### Changed
 
-- Fixed early installation failures and version metadata issues before the
-  first tagged release.
+- Switched the MLIR grammar source to
+  [`felixtensor/tree-sitter-mlir`](https://github.com/felixtensor/tree-sitter-mlir)
+  before the first tagged baseline.
 
 [v0.5.2]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.5.1...v0.5.2
 [v0.5.1]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.5.0...v0.5.1
@@ -155,4 +172,5 @@ For future plans, see [docs/ROADMAP.md](docs/ROADMAP.md).
 [v0.3.1]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.2.1...v0.3.0
 [v0.2.1]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.2.0...v0.2.1
-[v0.2.0]: https://github.com/felixtensor/zed-mlir-suite/releases/tag/v0.2.0
+[v0.2.0]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.1.0...v0.2.0
+[v0.1.0]: https://github.com/felixtensor/zed-mlir-suite/releases/tag/v0.1.0
