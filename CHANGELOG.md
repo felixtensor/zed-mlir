@@ -6,6 +6,34 @@ retroactively on the last commit that still declared version 0.1.0.
 
 For future plans, see [docs/ROADMAP.md](docs/ROADMAP.md).
 
+## [v0.5.3] - 2026-05-20
+
+### Added
+
+- Added bilingual README documentation and refreshed developer-install notes.
+- Added the project changelog and refreshed the v0.6 roadmap.
+
+### Changed
+
+- Updated the MLIR and TableGen grammar revisions used by the extension.
+- Simplified language-server settings parsing.
+
+### Improved
+
+- Improved MLIR highlighting for string escapes and dimension separators.
+- Improved TableGen highlighting for ODS fields, definition names, and LHS-only
+  declaration / binding captures.
+- Restricted TableGen `<>` indentation to constructs that commonly span
+  multiple lines.
+
+### Fixed
+
+- Fixed CI to build the published WebAssembly target.
+- Fixed TableGen C++ injection coverage for renamed and shared declaration
+  fields.
+- Fixed language-server startup behavior by inheriting the user's shell
+  environment and logging invalid settings.
+
 ## [v0.5.2] - 2026-05-07
 
 ### Added
@@ -165,6 +193,7 @@ For future plans, see [docs/ROADMAP.md](docs/ROADMAP.md).
   [`felixtensor/tree-sitter-mlir`](https://github.com/felixtensor/tree-sitter-mlir)
   before the first tagged baseline.
 
+[v0.5.3]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.5.2...v0.5.3
 [v0.5.2]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.5.1...v0.5.2
 [v0.5.1]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/felixtensor/zed-mlir-suite/compare/v0.4.0...v0.5.0
