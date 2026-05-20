@@ -28,15 +28,44 @@
 
 ## 安装
 
-在 Zed 的扩展面板中安装（macOS 按 `Cmd+Shift+X`，Linux/Windows 按 `Ctrl+Shift+X`），搜索 "MLIR Suite" 即可。
+本扩展以 Zed **开发扩展（dev extension）** 方式安装：克隆仓库后将目录交给 Zed，Zed 会在首次安装时将扩展编译为 WebAssembly，因此本地需要可用的 Rust 工具链。
 
-本地安装为开发扩展（用于开发或测试）：
+### 1. 安装 Rust 工具链
+
+通过 [rustup](https://rustup.rs) 安装 Rust（stable）。macOS / Linux：
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Windows 下从 [rustup.rs](https://rustup.rs) 下载并运行 `rustup-init.exe`。
+
+随后添加 Zed 扩展所使用的 WebAssembly 目标：
+
+```bash
+rustup target add wasm32-wasip2
+```
+
+确保在启动 Zed 的同一个 shell 中工具链可用（Zed 会继承其 `PATH`）：
+
+```bash
+cargo --version
+rustup target list --installed
+```
+
+已安装目标列表中需包含 `wasm32-wasip2`。
+
+### 2. 克隆仓库
 
 ```bash
 git clone https://github.com/felixtensor/zed-mlir-suite.git
 ```
 
-在 Zed 中打开 **Extensions** → **Install Dev Extension** → 选择克隆的目录。
+### 3. 作为开发扩展安装
+
+在 Zed 中打开命令面板（macOS 按 `Cmd+Shift+P`，Linux/Windows 按 `Ctrl+Shift+P`），执行 **`zed: install dev extension`** —— 或打开 **Extensions**（`Cmd+Shift+X` / `Ctrl+Shift+X`）并点击 **Install Dev Extension**，然后选择克隆的目录。
+
+Zed 会在安装时构建扩展；首次构建需要拉取依赖，可能耗时一两分钟。若构建因目标缺失而失败，请重新执行 `rustup target add wasm32-wasip2` 并重新安装。
 
 ## Language Server 配置
 
