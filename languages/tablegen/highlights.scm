@@ -84,7 +84,11 @@
   "list"
 ] @type.builtin
 
-;; Definition names — parser-aligned highlight groups
+;; Definition names — parser-aligned highlight groups.
+;; `def_definition`'s name slot is `optional($._value)` in the grammar, so it
+;; legally accepts paste expressions (`def NAME#"x"`), string literals
+;; (`def "literal"`), and anonymous defs (`def : Parent`). Only the bare
+;; identifier form is highlighted here; other forms are valid but uncolored.
 (class_definition (identifier) @type.definition)
 (def_definition (identifier) @constant)
 (multiclass_definition (identifier) @function.macro)
