@@ -102,7 +102,10 @@
 ;; Anonymous records
 (anonymous_record (identifier) @type)
 
-;; Bang operators / built-in functions
+;; Bang operators / built-in functions.
+;; `!cond` lives in its own grammar node (`cond_operator_call`) instead of the
+;; flat `bang_operator` choice, so it needs an explicit anonymous-token rule
+;; to receive the same highlight.
 (bang_operator) @function.builtin
 "!cond" @function.builtin
 
@@ -143,9 +146,18 @@
 (def_definition (identifier) @type
   (#match? @type "Op$|Type$|Attr$"))
 
-;; Common ODS field names
+;; Common ODS field names — Op / TypeDef / AttrDef / Dialect surface.
+;; Split by rough category to keep the predicates readable.
 (field_declaration (type) . (identifier) @property.special
-  (#match? @property.special "^(arguments|results|regions|successors|summary|description|hasVerifier|hasCanonicalizer|hasCanonicalizeMethod|assemblyFormat|extraClassDeclaration|builders|hasFolder)$"))
+  (#match? @property.special "^(arguments|results|regions|successors|parameters|traits|builders)$"))
+(field_declaration (type) . (identifier) @property.special
+  (#match? @property.special "^(summary|description|opName|mnemonic|cppNamespace|cppClassName|dependentDialects)$"))
+(field_declaration (type) . (identifier) @property.special
+  (#match? @property.special "^(assemblyFormat|extraClassDeclaration|extraClassDefinition)$"))
+(field_declaration (type) . (identifier) @property.special
+  (#match? @property.special "^(hasCustomAssemblyFormat|skipDefaultBuilders|hasVerifier|hasRegionVerifier|hasCanonicalizer|hasCanonicalizeMethod|hasFolder|hasOperandAccessFunctions)$"))
+(field_declaration (type) . (identifier) @property.special
+  (#match? @property.special "^(useCustomTypePrinterParser|useDefaultAttributePrinterParser|useDefaultTypePrinterParser)$"))
 
 ;; Errors
 (ERROR) @error
