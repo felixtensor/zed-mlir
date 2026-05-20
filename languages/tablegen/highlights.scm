@@ -39,30 +39,37 @@
 ;; same identifier node override this fallback.
 (identifier) @variable
 
+;; Broad heuristic — keep before context-specific and definition-name rules so
+;; those later captures can override UPPER_CASE identifiers in semantic slots.
+((identifier) @type
+  (#match? @type "^_*[A-Z][A-Z0-9_]+$"))
+
 ;; Variable substitution (`$foo` / `$0` inside code_literal, `$bare` in DAG)
 ;; These are single-token nodes in the grammar, matching VS Code's `(\$\w+)\b`.
 (variable_substitution) @variable.special
 (variable_name) @variable.special
 
-;; Template parameters
-(template_parameter (identifier) @variable.parameter)
+;; Template parameters — capture only the LHS name, not default-value refs.
+(template_parameter (type) . (identifier) @variable.parameter)
 
-;; Foreach iteration variable — the first identifier child before `=`
-(foreach_statement (identifier) @variable.parameter)
+;; Foreach iteration variable — capture only the first named child before `=`.
+(foreach_statement . (identifier) @variable.parameter)
 
 ;; Member access: `Foo.bar`
 (value_suffix_dot (identifier) @variable.member)
 
-;; Field declarations
-(field_declaration (identifier) @property)
+;; Field declarations — capture only the declared field name, not RHS refs.
+(field_declaration (type) . (identifier) @property)
 
-;; Named arguments
-(named_argument (identifier) @field)
+;; Named arguments — capture only the argument name, not RHS refs.
+(named_argument . (identifier) @field)
 
-;; Let / defvar bindings — variable-like definitions, not member access
-(let_assignment (identifier) @variable)
-(let_item (identifier) @variable)
-(defvar_statement (identifier) @variable)
+;; Let / defvar bindings — capture only LHS names, not RHS refs.
+(let_assignment . (identifier) @variable)
+(let_assignment . (let_mode) . (identifier) @variable)
+(let_item . (identifier) @variable)
+(let_item . (let_mode) . (identifier) @variable)
+(defvar_statement . (identifier) @variable)
 
 ;; Types
 (type) @type
@@ -90,10 +97,6 @@
 
 ;; Anonymous records
 (anonymous_record (identifier) @type)
-
-;; UPPER_CASE identifiers as types
-((identifier) @type
-  (#match? @type "^_*[A-Z][A-Z0-9_]+$"))
 
 ;; Bang operators / built-in functions
 (bang_operator) @function.builtin
@@ -137,7 +140,7 @@
   (#match? @type "Op$|Type$|Attr$"))
 
 ;; Common ODS field names
-(field_declaration (identifier) @property.special
+(field_declaration (type) . (identifier) @property.special
   (#match? @property.special "^(arguments|results|regions|successors|summary|description|hasVerifier|hasCanonicalizer|hasCanonicalizeMethod|assemblyFormat|extraClassDeclaration|builders|hasFolder)$"))
 
 ;; Errors
