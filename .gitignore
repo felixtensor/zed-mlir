@@ -1,5 +1,24 @@
-/grammars
-/target
-/tmp
+# Zed extension generated artifacts
+# Zed fetches the tree-sitter grammars declared in `extension.toml` into this directory.
+/grammars/
+
+# `zed: install dev extension` / Cargo WASI builds produce WebAssembly bundles such as `extension.wasm`.
 *.wasm
+
+# Local Zed workspace state; extension source lives in `extension.toml`, `languages/`, and `src/`.
+/.zed/
+
+# Rust / Cargo build output
+/target/
+
+# Temporary files and logs
+/tmp/
+*.log
+*.tmp
+
+# OS / editor metadata
 .DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
