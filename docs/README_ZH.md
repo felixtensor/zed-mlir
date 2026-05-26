@@ -112,6 +112,10 @@ cmake --build . --target mlir-lsp-server mlir-pdll-lsp-server tblgen-lsp-server
 
 所有字段均为可选。扩展会自动检测工作区中的编译数据库文件；如果检测成功，无需手动配置。
 
+#### SSH 远程开发
+
+使用 Zed SSH 远程开发时，Language Server 运行在远端服务器上。MLIR Suite 的服务器二进制路径应通过 `zed: open server settings` 配置，而不是 `zed: open settings file`；后者打开的是本机 Zed 配置。详见 [SSH remote development](REMOTE_DEVELOPMENT.md)（仅英文）。
+
 #### 示例
 
 ```jsonc

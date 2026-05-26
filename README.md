@@ -112,6 +112,10 @@ Each server is configured under `lsp.<server-id>.settings` in Zed's `settings.js
 
 All fields are optional. The extension auto-detects compilation-database files in your workspace; if detection succeeds, no manual configuration is needed.
 
+#### SSH remote development
+
+When using Zed's SSH remote development, language servers run on the remote server. Configure MLIR Suite server binary paths with `zed: open server settings`, not `zed: open settings file`; the latter edits the local machine's settings. See [SSH remote development](docs/REMOTE_DEVELOPMENT.md) for the recommended settings layout.
+
 #### Example
 
 ```jsonc
