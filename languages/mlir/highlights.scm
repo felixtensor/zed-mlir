@@ -13,7 +13,7 @@
 
 ;; Keywords and Operation names
 (func_operation name: _ @function.builtin)
-(func_operation ["private" "public"] @attribute)
+(func_operation visibility: _ @attribute)
 (func_operation "attributes" @attribute)
 (module_operation name: _ @function.builtin)
 (module_operation "attributes" @attribute)
@@ -96,8 +96,12 @@
 (strided_layout "offset" @keyword)
 ["ceildiv" "floordiv" "mod"] @operator
 
-;; Trailing location
+;; Locations
 (trailing_location "loc" @keyword)
+(callsite_location ["callsite" "at"] @keyword)
+(fused_location "fused" @keyword)
+(location "to" @keyword)
+(unknown_location) @constant.builtin
 
 ;; Strings
 (string_literal) @string
@@ -156,7 +160,16 @@
 [
   "="
   "->"
+  "::"
+  "*"
 ] @operator
+
+;; Unranked dimension marker `*` in memref<*xf32> / tensor<*xf32> — render as
+;; a dimension placeholder (sibling of the `x` separator) rather than
+;; inheriting @operator from the block above. `_dim_primitive` is hidden so the
+;; `*` token is hoisted directly into (dim_list); vector_dim_list disallows it
+;; by construction. Must appear after the operator block under last-match-wins.
+(dim_list "*" @punctuation.special)
 
 ;; Block labels
 (caret_id) @label
