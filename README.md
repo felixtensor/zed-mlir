@@ -14,7 +14,7 @@
 
 - **Tree-sitter grammars** for MLIR (`.mlir`), TableGen (`.td`), and PDLL (`.pdll`) — 100% pass rate on 403 official MLIR test files across 11 core dialects, meaning virtually all valid MLIR syntax is highlighted correctly out of the box.
 - **First-class custom dialect support** — user-defined or out-of-tree `dialect.op` forms are recognized and highlighted correctly, so your project's own dialects just work.
-- **Symbol outline** — navigate `func.func`, modules, block labels, and PDLL `Pattern` / `Constraint` / `Rewrite` declarations from the outline panel.
+- **Symbol outline** — navigate symbols in MLIR, TableGen, and PDLL from the outline panel.
 - **Language Server integration** for all three upstream LLVM servers:
   - `mlir-lsp-server` for `.mlir`
   - `mlir-pdll-lsp-server` for `.pdll`

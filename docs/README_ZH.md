@@ -14,7 +14,7 @@
 
 - **Tree-sitter 语法高亮** — 覆盖 MLIR（`.mlir`）、TableGen（`.td`）和 PDLL（`.pdll`），在 403 个官方 MLIR 测试文件（涵盖 11 个核心 dialect）上实现 100% 通过率，几乎所有合法的 MLIR 语法都能正确高亮。
 - **一流的自定义 dialect 支持** — 用户自定义或外部 `dialect.op` 形式均可正确识别和高亮，你的项目自有 dialect 开箱即用。
-- **符号大纲** — 在大纲面板中导航 `func.func`、模块、块标签以及 PDLL 的 `Pattern` / `Constraint` / `Rewrite` 声明。
+- **符号大纲** — 在大纲面板中导航 MLIR、TableGen 和 PDLL 符号。
 - **集成三种上游 LLVM Language Server**：
   - `mlir-lsp-server` 用于 `.mlir`
   - `mlir-pdll-lsp-server` 用于 `.pdll`
