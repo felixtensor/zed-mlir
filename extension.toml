@@ -12,7 +12,7 @@ commit = "60a248686548d417df6216013da3de954a19bf71"
 
 [grammars.tablegen]
 repository = "https://github.com/felixtensor/tree-sitter-tablegen"
-commit = "4938c9b5c347477c25c91abee9cd857b86980b4c"
+commit = "23697bc28864763c4f37f118adfdb3fffd86cfda"
 
 [grammars.pdll]
 repository = "https://github.com/felixtensor/tree-sitter-pdll"
