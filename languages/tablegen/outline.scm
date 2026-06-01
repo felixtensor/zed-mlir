@@ -1,20 +1,25 @@
 ;; ---------------------------------------------------------------------------
 ;; TableGen outline (symbol navigation)
-;; Anonymous and computed record names are skipped because they do not have a
-;; stable, readable label to surface in Zed's outline.
+;; Anonymous, unset, and empty record names are skipped because they do not
+;; have a readable label to surface in Zed's outline. Computed names keep their
+;; source expression as a stable navigation label.
 ;; ---------------------------------------------------------------------------
 
 (class_definition
   "class" @context
   . (identifier) @name) @item
 
-(def_definition
+((def_definition
   "def" @context
-  . (identifier) @name) @item
+  . (object_name) @name) @item
+  (#not-eq? @name "?")
+  (#not-eq? @name "\"\""))
 
-(defm_definition
+((defm_definition
   "defm" @context
-  . (identifier) @name) @item
+  . (object_name) @name) @item
+  (#not-eq? @name "?")
+  (#not-eq? @name "\"\""))
 
 (multiclass_definition
   "multiclass" @context
@@ -25,7 +30,7 @@
   . (type)
   . (identifier) @name) @item
 
-;; These declarations are most useful at file scope. In-body defvars are
+;; These declarations are most useful at file scope. Scoped defvars are
 ;; implementation details and would add noise to the outline.
 (source_file
   (deftype_definition

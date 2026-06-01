@@ -85,14 +85,13 @@
 ] @type.builtin
 
 ;; Definition names — parser-aligned highlight groups.
-;; `def_definition`'s name slot is `optional($._value)` in the grammar, so it
-;; legally accepts paste expressions (`def NAME#"x"`), string literals
+;; `object_name` accepts paste expressions (`def NAME#"x"`), string literals
 ;; (`def "literal"`), and anonymous defs (`def : Parent`). Only the bare
 ;; identifier form is highlighted here; other forms are valid but uncolored.
 (class_definition (identifier) @type.definition)
-(def_definition (identifier) @constant)
+(def_definition (object_name (identifier) @constant))
 (multiclass_definition (identifier) @function.macro)
-(defm_definition (identifier) @type)
+(defm_definition (object_name (identifier) @type))
 (defset_definition (identifier) @type)
 (deftype_definition (identifier) @type)
 
@@ -143,7 +142,7 @@
   (#match? @type.builtin "^(Op|Pattern|Pat|Intrinsic|Attr|AttrDef|TypeDef|Dialect|Interface|OpInterface|AttrInterface|TypeInterface|Constraint|Pred|Property)$"))
 
 ;; ODS def names that follow the "Op" / "Type" / "Attr" suffix convention
-(def_definition (identifier) @type
+(def_definition (object_name (identifier) @type)
   (#match? @type "Op$|Type$|Attr$"))
 
 ;; Common ODS field names — Op / TypeDef / AttrDef / Dialect surface.
