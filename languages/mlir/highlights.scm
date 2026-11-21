@@ -2,10 +2,9 @@
 ;; MLIR syntax highlighting (dialect-agnostic)
 ;;
 ;; Zed's tree-sitter highlighter uses last-match-wins: when two rules overlap,
-;; the one that appears later in the file wins. The
-;; `(custom_operation (bare_id) @keyword)` fallback near the end must therefore
-;; come BEFORE the more specific `bare_id` captures (inside `attribute_entry`
-;; and `dense_resource_literal`) that need to override it.
+;; the one that appears later in the file wins. Keep specialized rules (e.g.
+;; quoted symbol refs, dictionary keys, and custom_body_arrow) AFTER the
+;; generic literal or punctuation rules they override.
 ;; ---------------------------------------------------------------------------
 
 ;; Comments
@@ -28,12 +27,9 @@
 (custom_operation ["+" "-" "*" "/" "&" "|" "~"] @operator)
 (custom_operation "?" @punctuation.special)
 (custom_operation "loc" @keyword)
-(custom_operation "module(" @keyword)
-(custom_operation ">" @punctuation.bracket)
+(custom_operation "module" @keyword)
 
 ;; Types
-(builtin_type) @type.builtin
-
 ;; Two-tone highlighting inside composite types (tensor, memref, vector).
 (dimension_size) @number
 
@@ -47,7 +43,7 @@
   (token_type)
 ] @type.builtin
 
-;; Composite types not always reachable through (builtin_type).
+;; Composite builtin types (including nested types reached through _prim_type).
 [
   (complex_type)
   (memref_type)
@@ -86,17 +82,17 @@
 
 ;; Attributes and other constants
 [
-  (tensor_literal)
-  (array_literal)
   (unit_literal)
   (uninitialized_literal)
 ] @constant.builtin
 
-;; Builtin attribute/literal introducers (dense, sparse, array, affine_map,
-;; affine_set, dense_resource) are @constant.builtin — the Zed translation of
-;; the VSCode grammar's constant.language anchor, not general syntax keywords
-;; like loc or structural fields like offset. Zed's official capture list has
-;; no @constructor.builtin, @constructor renders identical to @function in One
+;; Builtin attribute/literal introducers that take a <payload> (dense, sparse,
+;; array, affine_map, affine_set, strided, distinct, dense_resource) are
+;; @constant.builtin — the Zed translation of the VSCode grammar's
+;; constant.language anchor, distinct from numeric payloads, enclosing
+;; literal/attribute channels, and general syntax or clause/field keywords
+;; (loc, offset, vscale_range, comdat). Zed's official capture list has no
+;; @constructor.builtin, @constructor renders identical to @function in One
 ;; Dark (op names), and @property stays reserved for key-side channels, so
 ;; upstream's finer @constructor.builtin split deliberately flattens here.
 (tensor_literal ["dense" "sparse"] @constant.builtin)
@@ -113,23 +109,36 @@
 ;; Builtin attribute and affine keywords
 (affine_map "affine_map" @constant.builtin)
 (affine_set "affine_set" @constant.builtin)
-(affine_map (bare_id) @variable.parameter)
-(affine_set (bare_id) @variable.parameter)
-(affine_map ["symbol" "max" "min"] @keyword)
-(affine_set ["symbol" "max" "min"] @keyword)
-(affine_map
-  ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
-  @keyword)
-(affine_set
-  ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
-  @keyword)
-(affine_map ["+" "-" "*" "==" ">=" "<="] @operator)
-(affine_set ["+" "-" "*" "==" ">=" "<="] @operator)
-(properties ["<{" "}>"] @punctuation.bracket)
-(strided_layout "strided" @keyword)
+[
+  (affine_map (bare_id) @variable.parameter)
+  (affine_map_inline (bare_id) @variable.parameter)
+  (affine_set (bare_id) @variable.parameter)
+]
+[
+  (affine_map ["symbol" "max" "min"] @keyword)
+  (affine_map_inline ["symbol" "max" "min"] @keyword)
+  (affine_set ["symbol" "max" "min"] @keyword)
+]
+[
+  (affine_map
+    ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
+    @keyword)
+  (affine_map_inline
+    ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
+    @keyword)
+  (affine_set
+    ["dense" "sparse" "compressed" "singleton" "loose_compressed" "n_out_of_m"]
+    @keyword)
+]
+[
+  (affine_map ["+" "-" "*" "==" ">=" "<="] @operator)
+  (affine_map_inline ["+" "-" "*" "==" ">=" "<="] @operator)
+  (affine_set ["+" "-" "*" "==" ">=" "<="] @operator)
+]
+(strided_layout "strided" @constant.builtin)
 (strided_layout "offset" @keyword)
 (strided_layout ["?" "*"] @punctuation.special)
-(distinct_attribute "distinct" @keyword)
+(distinct_attribute "distinct" @constant.builtin)
 (dense_resource_literal "dense_resource" @constant.builtin)
 
 [
@@ -138,10 +147,19 @@
   "mod"
 ] @operator
 
-(pretty_dialect_item_body
-  ["array" "dense" "opaque" "sparse" "tensor" "vector"] @keyword)
-(pretty_dialect_item_body (bare_id) @keyword)
-(pretty_dialect_item_body ["?" "*"] @punctuation.special)
+[
+  (pretty_dialect_item_body
+    ["array" "dense" "memref" "opaque" "sparse" "tensor" "tuple" "vector"]
+    @keyword)
+  (dialect_dim_list
+    ["array" "memref" "tuple" "vector"] @keyword)
+]
+[
+  (pretty_dialect_item_body (bare_id) @keyword)
+  (dialect_dim_list (bare_id) @keyword)
+]
+(pretty_dialect_item_body ["?" "*" "@" "#"] @punctuation.special)
+(pretty_dialect_item_body "." @punctuation.delimiter)
 
 ;; Locations
 (trailing_location "loc" @keyword)
@@ -150,32 +168,33 @@
 (location "to" @keyword)
 (unknown_location) @constant.builtin
 
-;; Strings
-(string_literal) @string
-(generic_operation (string_literal) @function)
-(escape_sequence) @string.escape
-
 ;; Symbols (@name) — all symbol references share one capture.
 (symbol_ref_id) @string.special.symbol
 
-;; SSA values — @variable.special gives a distinct color.
-[
-  (value_use)
-  (op_result)
-] @variable.special
+;; Strings
+(string_literal) @string
+;; Same-node overrides for string_literal in specialized positions.
+(generic_operation (string_literal) @function)
+(symbol_ref_id (string_literal) @string.special.symbol)
+(escape_sequence) @string.escape
+
+;; SSA values — @variable.special gives a distinct color. (value_use) covers
+;; both arguments and op_result children.
+(value_use) @variable.special
 
 ;; Fallback keyword for ad-hoc custom operation body tokens like `to`, `step`,
 ;; `ins`, and `outs`. Keep this scoped so attribute keys, affine dimensions,
 ;; and pretty dialect payload identifiers do not all become keywords.
 (custom_operation (bare_id) @keyword)
 
-;; Handle name inside dense_resource<...> — must come AFTER the bare_id
-;; catch-all so it wins under last-match-wins.
+;; Dense resource handle: this bare_id is nested inside dense_resource_literal,
+;; not a direct custom_operation child, so the catch-all above never matches it.
 (dense_resource_literal (bare_id) @constant.builtin)
 
-;; Dictionary attribute keys (e.g. `predicate` in `{predicate = 1}`)
-(attribute_entry (bare_id) @attribute)
-(attribute_entry (string_literal) @attribute)
+;; Dictionary attribute keys (e.g. `predicate` in `{predicate = 1}`): placed
+;; after `(string_literal) @string` so quoted keys override string highlighting
+;; while `array_attribute` elements remain uncolored by this rule.
+(attribute_entry key: _ @attribute)
 
 ;; External resource block delimiters
 (external_resources ["{-#" "#-}"] @punctuation.bracket)
@@ -207,6 +226,9 @@
   "->"
   "::"
 ] @operator
+
+;; OpenMP mapped-from arrow `<-` overrides the generic `<` bracket rule above.
+(custom_body_arrow ["<" "-"] @operator)
 
 ;; Block labels
 (caret_id) @label
