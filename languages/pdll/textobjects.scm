@@ -23,7 +23,8 @@
 (source_file
   (rewrite_decl) @function.around)
 
-;; Compound bodies only; `=> expr;`, `[{ ... }];`, and `;` have no block.
+;; Compound bodies only; `=> expr;`, `[{ ... }];`, `"..."`, and `;` have no
+;; block.
 (source_file
   (pattern_decl
     "{"

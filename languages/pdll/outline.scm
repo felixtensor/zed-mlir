@@ -11,14 +11,14 @@
 (source_file
   (pattern_decl
     "Pattern" @context
-    . (identifier) @name) @item)
+    name: (identifier) @name) @item)
 
 (source_file
   (constraint_decl
     "Constraint" @context
-    . (identifier) @name) @item)
+    name: (identifier) @name) @item)
 
 (source_file
   (rewrite_decl
     "Rewrite" @context
-    . (identifier) @name) @item)
+    name: (identifier) @name) @item)
